@@ -6,4 +6,4 @@ def test_cli_imports():
     assert main
     assert evaluate
     assert run_ingestion
-    assert len(build_catalog()) == 10
+    assert len(build_catalog()) == 16

@@ -15,8 +15,14 @@ import streamlit as st
 from shared_core.config.settings import load_settings
 from shared_core.database.engine import get_engine
 
+from src.application.use_cases.cattle_breeds import (
+    CATTLE_BREEDS,
+    RATING_ORDER,
+    recommended_breeds_for,
+)
 from src.application.use_cases.correlation import correlate, correlation_matrix, to_annual_series
 from src.application.use_cases.narrative import describe_series
+from src.application.use_cases.national_share import compute_shares_by_province
 from src.application.use_cases.reference_values import (
     land_price_reference_for,
     rental_references_for,
@@ -30,6 +36,13 @@ from src.domain.taxation import estimate_export_duty
 from src.domain.timeseries import Observation
 from src.infrastructure.extractors.georef_ar import fetch_department_centroids
 from src.infrastructure.repositories.timeseries_repository import TimeSeriesRepository
+from src.interfaces.theme import (
+    CATEGORICAL_SEQUENCE,
+    DIVERGING_BLUE_RED,
+    PROVINCE_COLORS,
+    SEQUENTIAL_BLUE,
+    style_figure,
+)
 
 st.set_page_config(page_title="Agro Intelligence", page_icon="🌾", layout="wide")
 
@@ -39,6 +52,10 @@ VARIABLES = {
     "Rendimiento soja (kg/ha)": ("rendimiento_soja", "kg/ha", True),
     "Rendimiento maíz (kg/ha)": ("rendimiento_maiz", "kg/ha", True),
     "Rendimiento trigo (kg/ha)": ("rendimiento_trigo", "kg/ha", True),
+    "Producción soja (tn)": ("produccion_soja_tm", "tn", True),
+    "Producción maíz (tn)": ("produccion_maiz_tm", "tn", True),
+    "Producción trigo (tn)": ("produccion_trigo_tm", "tn", True),
+    "Existencia bovina (cabezas)": ("existencia_bovina_cabezas", "cabezas", True),
     "Precio internacional soja — proxy CBOT (USD/ton)": ("precio_soja_usd_ton", "USD/ton", False),
     "Precio internacional maíz — proxy CBOT (USD/ton)": ("precio_maiz_usd_ton", "USD/ton", False),
     "Precio internacional trigo — proxy CBOT (USD/ton)": (
@@ -49,6 +66,30 @@ VARIABLES = {
     "Bosque nativo — proxy forestal (ha)": ("bosque_nativo_ha", "ha", False),
     "Tipo de cambio oficial A3500 ($/USD)": ("tipo_cambio_a3500", "$/USD", False),
     "Dólar blue — venta ($/USD)": ("dolar_blue_venta", "$/USD", False),
+}
+
+# Variables con contraparte "total nacional" (24 provincias) real: sirven para calcular
+# qué peso tiene cada una de nuestras 5 provincias en el indicador macro real, no solo
+# relativo entre ellas. Rendimiento (kg/ha) no entra: es una tasa, no tiene un "total
+# nacional" con sentido de suma.
+NATIONAL_CODE_FOR = {
+    "produccion_soja_tm": "produccion_soja_tm_nacional",
+    "produccion_maiz_tm": "produccion_maiz_tm_nacional",
+    "produccion_trigo_tm": "produccion_trigo_tm_nacional",
+    "existencia_bovina_cabezas": "existencia_bovina_cabezas_nacional",
+}
+
+# Variable de cada mapa que sí tiene contraparte por departamento (todas las mapeables,
+# de momento).
+DEPARTMENT_CODE_FOR = {
+    code: f"{code}_depto" for code, _, has_province in VARIABLES.values() if has_province
+}
+
+# Colores fijos por variable en gráficos donde aparecen varias a la vez (series apiladas):
+# la misma variable es siempre el mismo color, sin importar qué más esté seleccionado.
+VARIABLE_COLORS = {
+    label: CATEGORICAL_SEQUENCE[index % len(CATEGORICAL_SEQUENCE)]
+    for index, label in enumerate(VARIABLES.keys())
 }
 
 # Centroides oficiales de cada provincia (apis.datos.gob.ar/georef, servicio de
@@ -117,6 +158,7 @@ st.caption("Buenos Aires · Santa Fe · Entre Ríos · Corrientes · Córdoba")
     tab_anual,
     tab_relaciones,
     tab_asistente,
+    tab_ganaderia,
     tab_evaluador,
 ) = st.tabs(
     [
@@ -127,6 +169,7 @@ st.caption("Buenos Aires · Santa Fe · Entre Ríos · Corrientes · Córdoba")
         "📊 Comparativa anual",
         "🔗 Relaciones",
         "🤖 Asistente de zona",
+        "🐄 Ganadería",
         "💰 Evaluador de proyecto",
     ]
 )
@@ -165,7 +208,10 @@ with tab_series:
             value=False,
         )
 
-        figure = px.line(data, x="fecha", y="valor", color="provincia", markers=True)
+        figure = px.line(
+            data, x="fecha", y="valor", color="provincia", markers=True,
+            color_discrete_map=PROVINCE_COLORS,
+        )
 
         if show_projection:
             annual = to_annual_series(filtered)
@@ -187,8 +233,7 @@ with tab_series:
                     "**no** un dato oficial ni un pronóstico riguroso."
                 )
 
-        figure.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-        st.plotly_chart(figure, use_container_width=True)
+        st.plotly_chart(style_figure(figure), use_container_width=True)
 
         st.info(describe_series(filtered, label=label, unit=unit))
 
@@ -240,74 +285,138 @@ with tab_stats:
         )
 
         histogram = px.histogram(
-            observations_to_frame(observations_stats), x="valor", nbins=30, marginal="box"
+            observations_to_frame(observations_stats), x="valor", nbins=30, marginal="box",
+            color_discrete_sequence=[SEQUENTIAL_BLUE[4]],
         )
-        histogram.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-        st.plotly_chart(histogram, use_container_width=True)
+        st.plotly_chart(style_figure(histogram), use_container_width=True)
 
 with tab_mapa:
     st.subheader("Vista geográfica")
 
-    zoom_level = st.radio(
-        "Nivel de zonificación",
-        ["Departamento (mayor detalle)", "Provincia"],
-        horizontal=True,
-        key="map_zoom_level",
-    )
-    label_map = st.selectbox(
-        "Variable",
-        [key for key, value in VARIABLES.items() if value[2]],
-        key="map_variable",
-    )
+    map_variable_labels = [key for key, value in VARIABLES.items() if value[2]]
+    label_map = st.selectbox("Variable", map_variable_labels, key="map_variable")
     code_map, unit_map, _ = VARIABLES[label_map]
+    has_national = code_map in NATIONAL_CODE_FOR
 
-    st.caption(
-        f"🎨 **Color y tamaño del punto** = promedio histórico de *{label_map}* en esa zona "
-        f"({unit_map}). Verde más oscuro / punto más grande = valor más alto. Pasá el mouse "
-        "sobre un punto para ver el nombre y el valor exacto."
-    )
+    view_options = ["Promedio histórico", "Evolución animada (año a año)"]
+    if has_national:
+        view_options.append("% del total nacional")
+    view = st.radio("Vista", view_options, horizontal=True, key="map_view")
 
-    if zoom_level.startswith("Departamento"):
-        depto_code = f"{code_map}_depto"
-        depto_observations = load_observations(depto_code, None)
-
-        values_by_zone: dict[str, list[float]] = {}
-        for observation in depto_observations:
-            values_by_zone.setdefault(observation.province, []).append(observation.value)
-        averages = {zone: sum(values) / len(values) for zone, values in values_by_zone.items()}
-
-        centroids = load_department_centroids()
-        map_rows = [
-            {
-                "zona": zone,
-                "lat": centroids[zone][0],
-                "lon": centroids[zone][1],
-                "valor": average,
-            }
-            for zone, average in averages.items()
-            if zone in centroids
-        ]
-        unmatched = len(averages) - len(map_rows)
-        if unmatched:
-            st.caption(
-                f"({unmatched} de {len(averages)} departamentos no se pudieron ubicar en el "
-                "mapa — el nombre no coincide exactamente entre la fuente de rendimientos y "
-                "la de geodatos oficiales.)"
-            )
+    show_zoom_control = view != "% del total nacional"
+    if show_zoom_control:
+        zoom_level = st.radio(
+            "Nivel de zonificación",
+            ["Departamento (mayor detalle)", "Provincia"],
+            horizontal=True,
+            key="map_zoom_level",
+        )
     else:
+        zoom_level = "Provincia"
+        st.caption("El peso sobre el total nacional se calcula por provincia.")
+
+    if view == "% del total nacional":
+        st.caption(
+            f"🎨 % del total nacional de *{label_map}* que representa cada provincia — "
+            "sobre las 24 provincias del país, no solo estas 5. Fuente del total nacional: "
+            "mismo relevamiento oficial (MAGyP/SENASA), sin filtrar por provincia."
+        )
+        provincial_observations = load_observations(code_map, None)
+        national_observations = load_observations(NATIONAL_CODE_FOR[code_map], None)
+        shares = compute_shares_by_province(provincial_observations, national_observations)
+
         map_rows = []
-        for province in PROVINCES:
-            stats_province = describe_stats(load_observations(code_map, province))
-            if stats_province is not None:
-                lat, lon = PROVINCE_CENTROIDS[province]
-                map_rows.append(
-                    {"zona": province, "lat": lat, "lon": lon, "valor": stats_province.mean}
+        by_province: dict[str, list[float]] = {}
+        for share in shares:
+            by_province.setdefault(share.province, []).append(share.share)
+        for province, values in by_province.items():
+            lat, lon = PROVINCE_CENTROIDS[province]
+            map_rows.append(
+                {"zona": province, "lat": lat, "lon": lon, "valor": sum(values) / len(values) * 100}
+            )
+        unit_map = "% del total nacional"
+    else:
+        moment_label = "valor por año (animado)" if "animada" in view else "promedio histórico"
+        st.caption(
+            f"🎨 **Color y tamaño del punto** = {moment_label} de *{label_map}* en esa zona "
+            f"({unit_map}). Más oscuro / más grande = valor más alto. Pasá el mouse sobre un "
+            "punto para ver el nombre y el valor exacto."
+        )
+
+        if zoom_level.startswith("Departamento"):
+            depto_code = DEPARTMENT_CODE_FOR.get(code_map)
+            depto_observations = load_observations(depto_code, None) if depto_code else []
+            centroids = load_department_centroids()
+
+            if "animada" in view:
+                map_rows = [
+                    {
+                        "zona": o.province,
+                        "lat": centroids[o.province][0],
+                        "lon": centroids[o.province][1],
+                        "año": o.date.year,
+                        "valor": o.value,
+                    }
+                    for o in depto_observations
+                    if o.province in centroids
+                ]
+                unmatched_zones = {o.province for o in depto_observations} - set(centroids)
+            else:
+                values_by_zone: dict[str, list[float]] = {}
+                for observation in depto_observations:
+                    values_by_zone.setdefault(observation.province, []).append(observation.value)
+                averages = {
+                    zone: sum(values) / len(values) for zone, values in values_by_zone.items()
+                }
+                map_rows = [
+                    {
+                        "zona": zone,
+                        "lat": centroids[zone][0],
+                        "lon": centroids[zone][1],
+                        "valor": average,
+                    }
+                    for zone, average in averages.items()
+                    if zone in centroids
+                ]
+                unmatched_zones = set(averages) - set(centroids)
+
+            if unmatched_zones:
+                st.caption(
+                    f"({len(unmatched_zones)} departamentos no se pudieron ubicar en el mapa — "
+                    "el nombre no coincide exactamente entre la fuente de datos y la de "
+                    "geodatos oficiales.)"
                 )
+        else:
+            if "animada" in view:
+                map_rows = [
+                    {
+                        "zona": o.province,
+                        "lat": PROVINCE_CENTROIDS[o.province][0],
+                        "lon": PROVINCE_CENTROIDS[o.province][1],
+                        "año": o.date.year,
+                        "valor": o.value,
+                    }
+                    for province in PROVINCES
+                    for o in load_observations(code_map, province)
+                ]
+            else:
+                map_rows = []
+                for province in PROVINCES:
+                    stats_province = describe_stats(load_observations(code_map, province))
+                    if stats_province is not None:
+                        lat, lon = PROVINCE_CENTROIDS[province]
+                        map_rows.append(
+                            {"zona": province, "lat": lat, "lon": lon, "valor": stats_province.mean}
+                        )
 
     if not map_rows:
-        st.warning("No hay datos para esta variable todavía.")
+        st.warning("No hay datos para esta selección todavía.")
     else:
-        map_frame = pd.DataFrame(map_rows)
+        map_frame = pd.DataFrame(map_rows).sort_values(
+            "año" if "año" in map_rows[0] else "zona"
+        )
+        color_range = [map_frame["valor"].min(), map_frame["valor"].max()]
+
         geo_map = px.scatter_geo(
             map_frame,
             lat="lat",
@@ -315,29 +424,33 @@ with tab_mapa:
             size="valor",
             color="valor",
             hover_name="zona",
-            color_continuous_scale="YlGn",
+            color_continuous_scale=SEQUENTIAL_BLUE,
+            range_color=color_range,
             scope="south america",
-            labels={"valor": f"{label_map} ({unit_map})"},
+            labels={"valor": unit_map},
+            animation_frame="año" if "año" in map_frame.columns else None,
         )
         geo_map.update_geos(
             center={"lat": -32, "lon": -60}, projection_scale=6, showcountries=True
         )
-        geo_map.update_layout(
-            margin={"l": 0, "r": 0, "t": 10, "b": 0},
-            coloraxis_colorbar={"title": unit_map},
-        )
-        st.plotly_chart(geo_map, use_container_width=True)
+        geo_map.update_layout(coloraxis_colorbar={"title": unit_map})
+        st.plotly_chart(style_figure(geo_map), use_container_width=True)
 
-        ranked = map_frame.sort_values("valor", ascending=False)
+        summary_frame = (
+            map_frame.groupby("zona", as_index=False)["valor"].mean()
+            if "año" in map_frame.columns
+            else map_frame
+        )
+        ranked = summary_frame.sort_values("valor", ascending=False)
         top = ranked.head(3)
         bottom = ranked.tail(3)
         col_top, col_bottom = st.columns(2)
         with col_top:
-            st.markdown("**🟢 Top 3 (mayor valor)**")
+            st.markdown("**🟢 Zonas más productivas**")
             for _, row in top.iterrows():
                 st.write(f"{row['zona']}: {row['valor']:,.1f} {unit_map}")
         with col_bottom:
-            st.markdown("**🔴 Últimos 3 (menor valor)**")
+            st.markdown("**🔴 Zonas menos productivas**")
             for _, row in bottom.iterrows():
                 st.write(f"{row['zona']}: {row['valor']:,.1f} {unit_map}")
 
@@ -379,10 +492,10 @@ with tab_apiladas:
             )
 
             stacked = px.area(
-                long_format, x="año", y="índice (base 100)", color="variable", markers=True
+                long_format, x="año", y="índice (base 100)", color="variable", markers=True,
+                color_discrete_map=VARIABLE_COLORS,
             )
-            stacked.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-            st.plotly_chart(stacked, use_container_width=True)
+            st.plotly_chart(style_figure(stacked), use_container_width=True)
 
 with tab_anual:
     st.subheader("¿Qué cultivo convino más cada campaña?")
@@ -415,12 +528,11 @@ with tab_anual:
 
         heatmap = px.imshow(
             pivot,
-            color_continuous_scale="RdYlGn",
+            color_continuous_scale=SEQUENTIAL_BLUE,
             aspect="auto",
             labels={"color": "USD/ha"},
         )
-        heatmap.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-        st.plotly_chart(heatmap, use_container_width=True)
+        st.plotly_chart(style_figure(heatmap), use_container_width=True)
 
         best_row = revenue_frame.loc[revenue_frame["ingreso bruto (USD/ha)"].idxmax()]
         st.info(
@@ -443,14 +555,13 @@ with tab_relaciones:
 
     matrix_heatmap = px.imshow(
         matrix,
-        color_continuous_scale="RdBu",
+        color_continuous_scale=DIVERGING_BLUE_RED,
         zmin=-1,
         zmax=1,
         aspect="auto",
         labels={"color": "correlación"},
     )
-    matrix_heatmap.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-    st.plotly_chart(matrix_heatmap, use_container_width=True)
+    st.plotly_chart(style_figure(matrix_heatmap), use_container_width=True)
 
     st.divider()
     st.subheader("Cruce entre dos variables")
@@ -481,10 +592,12 @@ with tab_relaciones:
         annual_b = to_annual_series(observations_b).rename(label_b)
         merged = pd.concat([annual_a, annual_b], axis=1, join="inner").reset_index(names="año")
 
-        scatter = px.scatter(merged, x=label_a, y=label_b, text="año")
+        scatter = px.scatter(
+            merged, x=label_a, y=label_b, text="año",
+            color_discrete_sequence=[CATEGORICAL_SEQUENCE[0]],
+        )
         scatter.update_traces(textposition="top center")
-        scatter.update_layout(margin={"l": 0, "r": 0, "t": 10, "b": 0})
-        st.plotly_chart(scatter, use_container_width=True)
+        st.plotly_chart(style_figure(scatter), use_container_width=True)
 
         abs_correlation = abs(correlation)
         if abs_correlation > 0.7:
@@ -572,6 +685,88 @@ with tab_asistente:
         )
     else:
         st.warning("Faltan datos de rinde o precio internacional para estimar esto.")
+
+with tab_ganaderia:
+    st.subheader("🐄 Ganadería — catálogo de razas y recomendación por zona")
+    st.caption(
+        "Características zootécnicas generales, no una serie ingerida (fuente citada por "
+        "raza). Punto clave verificado: en el NEA (Corrientes) la presión de garrapata y "
+        "humedad hace que las razas británicas puras rindan peor — por eso el Braford es "
+        "más del 60% de los rodeos de esa región, no una preferencia arbitraria."
+    )
+
+    def _rating_dots(rating: str) -> str:
+        level = RATING_ORDER.get(rating, 0)
+        return "●" * level + "○" * (4 - level)
+
+    zona_ganado = st.selectbox("¿Para qué provincia buscás raza?", PROVINCES, key="ganado_zona")
+    recomendadas = recommended_breeds_for(zona_ganado)
+    recommended_names = {breed.name for breed in recomendadas}
+
+    if recomendadas:
+        st.success(
+            f"Para **{zona_ganado}**: "
+            + " · ".join(f"**{breed.name}**" for breed in recomendadas)
+        )
+    else:
+        st.info(f"Sin recomendación específica cargada para {zona_ganado} todavía.")
+
+    breed_names = [breed.name for breed in CATTLE_BREEDS]
+    selected_breeds = st.multiselect(
+        "Comparar razas (radar)",
+        breed_names,
+        default=list(recommended_names) or breed_names[:2],
+        key="ganado_comparar",
+    )
+
+    dimensions = ["Rusticidad", "Resist. garrapata", "Rendimiento engorde", "Calidad de carne"]
+    radar_figure = go.Figure()
+    for index, breed in enumerate(CATTLE_BREEDS):
+        if breed.name not in selected_breeds:
+            continue
+        meat_rating = breed.meat_quality.split(" — ")[0]
+        values = [
+            RATING_ORDER[breed.rusticity],
+            RATING_ORDER[breed.tick_resistance],
+            RATING_ORDER[breed.feedlot_performance],
+            RATING_ORDER[meat_rating],
+        ]
+        radar_figure.add_trace(
+            go.Scatterpolar(
+                r=values + values[:1],
+                theta=dimensions + dimensions[:1],
+                fill="toself",
+                name=breed.name,
+                line={"color": CATEGORICAL_SEQUENCE[index % len(CATEGORICAL_SEQUENCE)]},
+            )
+        )
+    radar_figure.update_layout(
+        polar={
+            "radialaxis": {
+                "visible": True,
+                "range": [0, 4],
+                "tickvals": [1, 2, 3, 4],
+                "ticktext": ["Baja", "Media", "Media-alta", "Alta"],
+            }
+        },
+        showlegend=True,
+    )
+    st.plotly_chart(style_figure(radar_figure), use_container_width=True)
+
+    st.markdown("#### Ficha por raza")
+    breed_columns = st.columns(3)
+    for index, breed in enumerate(CATTLE_BREEDS):
+        with breed_columns[index % 3], st.container(border=True):
+            highlight = " 🎯" if breed.name in recommended_names else ""
+            st.markdown(f"**{breed.name}**{highlight}")
+            st.caption(breed.breed_type)
+            st.write(f"🎨 {breed.color}")
+            st.write(f"Rusticidad {_rating_dots(breed.rusticity)}")
+            st.write(f"Garrapata {_rating_dots(breed.tick_resistance)}")
+            st.write(f"Engorde {_rating_dots(breed.feedlot_performance)}")
+            st.write(f"Carne {_rating_dots(breed.meat_quality.split(' — ')[0])}")
+            st.caption(breed.notes)
+            st.caption(f"Fuente: {breed.source}")
 
 with tab_evaluador:
     st.subheader("Evaluación financiera de un proyecto")

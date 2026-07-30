@@ -26,6 +26,22 @@ LIVESTOCK_CSV_URL = (
     "https://datos.magyp.gob.ar/dataset/d769a8a5-af81-4192-a623-6e3844bf500e"
     "/resource/bd15f73c-fe07-41d9-9dd9-58e3244cad59/download/mercado-de-liniers-mensual-.csv"
 )
+LIVESTOCK_STOCK_CSV_URL = (
+    "https://datos.magyp.gob.ar/dataset/c19a5875-fb39-48b6-b0b2-234382722afb"
+    "/resource/1b920477-8112-4e12-bc2c-94b564f04183"
+    "/download/existencias-bovinas-provincia-departamento-2008-2019.csv"
+)
+CATTLE_CATEGORY_COLUMNS = [
+    "vacas",
+    "vaquillonas",
+    "novillos",
+    "novillitos",
+    "terneros",
+    "terneras",
+    "toros",
+    "toritos",
+    "bueyes",
+]
 FORESTRY_CSV_URL = "https://ciam.ambiente.gob.ar/dt_csv.php?dt_id=465"
 FX_SERIES_ID = "168.1_T_CAMBI500_D_0_0_17"  # Tipo de Cambio A3500 (BCRA / MAE / Rofex)
 
@@ -127,6 +143,158 @@ class AgricultureDepartmentTransformer(Transformer):
                 province=f"{row.departamento}, {row.province}",
                 date=date(int(row.anio), 1, 1),
                 value=float(row.rendimiento_kgxha),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+class AgricultureProductionTransformer(Transformer):
+    """Producción (toneladas) por cultivo/provincia/año. A diferencia del rendimiento
+    (kg/ha, se promedia entre departamentos), la producción se SUMA: es una cantidad
+    aditiva, no una tasa. Sirve como numerador para calcular el peso de cada provincia
+    en la producción nacional."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        subset = _filter_and_tag_agriculture(data)
+        grouped = subset.groupby(["crop", "province", "anio"], as_index=False)[
+            "produccion_tm"
+        ].sum()
+
+        return [
+            Observation(
+                variable_code=f"produccion_{row.crop}_tm",
+                province=row.province,
+                date=date(int(row.anio), 1, 1),
+                value=float(row.produccion_tm),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+class AgricultureProductionDepartmentTransformer(Transformer):
+    """Producción (toneladas) por departamento — misma zonificación que rendimiento y
+    existencia bovina, para que el mapa sea consistente entre variables."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        subset = _filter_and_tag_agriculture(data)
+        grouped = subset.groupby(["crop", "province", "departamento", "anio"], as_index=False)[
+            "produccion_tm"
+        ].sum()
+
+        return [
+            Observation(
+                variable_code=f"produccion_{row.crop}_tm_depto",
+                province=f"{row.departamento}, {row.province}",
+                date=date(int(row.anio), 1, 1),
+                value=float(row.produccion_tm),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+class AgricultureNationalProductionTransformer(Transformer):
+    """Mismo CSV, sin filtrar por provincia — total nacional (las 24 provincias) de
+    producción por cultivo/año. Es el denominador para "qué peso tiene esta provincia
+    en la producción nacional", no solo el peso relativo entre nuestras 5 provincias."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        crop_mask = pd.Series(False, index=data.index)
+        crop_by_row = pd.Series(None, index=data.index, dtype=object)
+        for crop_name, pattern in CROP_PATTERNS.items():
+            matches = data["cultivo"].str.match(pattern, case=False, na=False)
+            crop_mask |= matches
+            crop_by_row = crop_by_row.mask(matches, crop_name)
+
+        subset = data[crop_mask].copy()
+        subset["crop"] = crop_by_row[crop_mask]
+        grouped = subset.groupby(["crop", "anio"], as_index=False)["produccion_tm"].sum()
+
+        return [
+            Observation(
+                variable_code=f"produccion_{row.crop}_tm_nacional",
+                province=None,
+                date=date(int(row.anio), 1, 1),
+                value=float(row.produccion_tm),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+def _filter_and_tag_livestock(data: pd.DataFrame) -> pd.DataFrame:
+    """Mismo matching tolerante a encoding que _filter_and_tag_agriculture — esta fuente
+    (SENASA) tiene la misma corrupción de tildes en nombres de provincia."""
+    province_mask = pd.Series(False, index=data.index)
+    province_by_row = pd.Series(None, index=data.index, dtype=object)
+    for province_name, pattern in PROVINCE_PATTERNS.items():
+        matches = data["provincia"].str.match(pattern, case=False, na=False)
+        province_mask |= matches
+        province_by_row = province_by_row.mask(matches, province_name)
+
+    subset = data[province_mask].copy()
+    subset["province"] = province_by_row[province_mask]
+    for column in CATTLE_CATEGORY_COLUMNS:
+        subset[column] = pd.to_numeric(subset[column], errors="coerce").fillna(0)
+    subset["total_cabezas"] = subset[CATTLE_CATEGORY_COLUMNS].sum(axis=1)
+    return subset
+
+
+class LivestockStockTransformer(Transformer):
+    """SENASA — existencias bovinas -> cabezas totales por provincia/año (2008-2019).
+    Suma las categorías (vacas, novillos, terneros, etc.) a un total de cabezas."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        subset = _filter_and_tag_livestock(data)
+        grouped = subset.groupby(["province", "anio"], as_index=False)["total_cabezas"].sum()
+
+        return [
+            Observation(
+                variable_code="existencia_bovina_cabezas",
+                province=row.province,
+                date=date(int(row.anio), 1, 1),
+                value=float(row.total_cabezas),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+class LivestockStockDepartmentTransformer(Transformer):
+    """Igual, agrupado por departamento — mayor zonificación para el mapa."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        subset = _filter_and_tag_livestock(data)
+        grouped = subset.groupby(["province", "departamento", "anio"], as_index=False)[
+            "total_cabezas"
+        ].sum()
+
+        return [
+            Observation(
+                variable_code="existencia_bovina_cabezas_depto",
+                province=f"{row.departamento}, {row.province}",
+                date=date(int(row.anio), 1, 1),
+                value=float(row.total_cabezas),
+            )
+            for row in grouped.itertuples()
+        ]
+
+
+class LivestockStockNationalTransformer(Transformer):
+    """Total nacional (todas las provincias, sin filtrar) de cabezas bovinas por año —
+    denominador para el peso de cada provincia en el rodeo nacional."""
+
+    def transform(self, data: pd.DataFrame) -> list[Observation]:
+        working = data.copy()
+        for column in CATTLE_CATEGORY_COLUMNS:
+            working[column] = pd.to_numeric(working[column], errors="coerce").fillna(0)
+        working["total_cabezas"] = working[CATTLE_CATEGORY_COLUMNS].sum(axis=1)
+
+        grouped = working.groupby("anio", as_index=False)["total_cabezas"].sum()
+
+        return [
+            Observation(
+                variable_code="existencia_bovina_cabezas_nacional",
+                province=None,
+                date=date(int(row.anio), 1, 1),
+                value=float(row.total_cabezas),
             )
             for row in grouped.itertuples()
         ]
@@ -310,6 +478,93 @@ def build_catalog() -> list[IngestionJob]:
                     source=AGRICULTURE_CSV_URL,
                 )
                 for crop in CROP_PATTERNS
+            ],
+        ),
+        IngestionJob(
+            name="agricultura_produccion",
+            extractor=MagypCsvExtractor(AGRICULTURE_CSV_URL),
+            transformer=AgricultureProductionTransformer(),
+            variables=[
+                Variable(
+                    code=f"produccion_{crop}_tm",
+                    name=f"Producción {crop} (toneladas)",
+                    unit="tn",
+                    vertical="agricultura",
+                    source=AGRICULTURE_CSV_URL,
+                )
+                for crop in CROP_PATTERNS
+            ],
+        ),
+        IngestionJob(
+            name="agricultura_produccion_departamento",
+            extractor=MagypCsvExtractor(AGRICULTURE_CSV_URL),
+            transformer=AgricultureProductionDepartmentTransformer(),
+            variables=[
+                Variable(
+                    code=f"produccion_{crop}_tm_depto",
+                    name=f"Producción {crop} por departamento (toneladas)",
+                    unit="tn",
+                    vertical="agricultura",
+                    source=AGRICULTURE_CSV_URL,
+                )
+                for crop in CROP_PATTERNS
+            ],
+        ),
+        IngestionJob(
+            name="agricultura_produccion_nacional",
+            extractor=MagypCsvExtractor(AGRICULTURE_CSV_URL),
+            transformer=AgricultureNationalProductionTransformer(),
+            variables=[
+                Variable(
+                    code=f"produccion_{crop}_tm_nacional",
+                    name=f"Producción nacional {crop} (toneladas, 24 provincias)",
+                    unit="tn",
+                    vertical="agricultura",
+                    source=AGRICULTURE_CSV_URL,
+                )
+                for crop in CROP_PATTERNS
+            ],
+        ),
+        IngestionJob(
+            name="ganaderia_existencias",
+            extractor=MagypCsvExtractor(LIVESTOCK_STOCK_CSV_URL),
+            transformer=LivestockStockTransformer(),
+            variables=[
+                Variable(
+                    code="existencia_bovina_cabezas",
+                    name="Existencia bovina (cabezas)",
+                    unit="cabezas",
+                    vertical="ganaderia",
+                    source=LIVESTOCK_STOCK_CSV_URL,
+                )
+            ],
+        ),
+        IngestionJob(
+            name="ganaderia_existencias_departamento",
+            extractor=MagypCsvExtractor(LIVESTOCK_STOCK_CSV_URL),
+            transformer=LivestockStockDepartmentTransformer(),
+            variables=[
+                Variable(
+                    code="existencia_bovina_cabezas_depto",
+                    name="Existencia bovina por departamento (cabezas)",
+                    unit="cabezas",
+                    vertical="ganaderia",
+                    source=LIVESTOCK_STOCK_CSV_URL,
+                )
+            ],
+        ),
+        IngestionJob(
+            name="ganaderia_existencias_nacional",
+            extractor=MagypCsvExtractor(LIVESTOCK_STOCK_CSV_URL),
+            transformer=LivestockStockNationalTransformer(),
+            variables=[
+                Variable(
+                    code="existencia_bovina_cabezas_nacional",
+                    name="Existencia bovina nacional (cabezas, 24 provincias)",
+                    unit="cabezas",
+                    vertical="ganaderia",
+                    source=LIVESTOCK_STOCK_CSV_URL,
+                )
             ],
         ),
         IngestionJob(

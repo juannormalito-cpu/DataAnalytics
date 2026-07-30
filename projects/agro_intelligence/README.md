@@ -16,6 +16,8 @@ desde la vista de la empresa que busca financiamiento.
 | Agricultura | MAGyP — Estimaciones Agrícolas | Rendimiento (kg/ha) de soja/maíz/trigo por provincia/año |
 | Agricultura / Insumos | CommodityPriceAPI (CBOT) | Precio internacional soja/maíz/trigo y urea, USD/ton — **proxy**: Argentina no publica FAS/FOB en serie abierta, solo PDF |
 | Ganadería | MAGyP/datos.gob.ar — Mercado de Liniers | Precio de novillo ($/kg vivo), serie nacional mensual |
+| Ganadería | SENASA — Existencias bovinas | Cabezas de ganado por provincia/departamento, 2008-2019, por categoría (vacas, novillos, terneros...) |
+| Agricultura (macro) | MAGyP — Estimaciones Agrícolas | Producción (tn) por provincia/departamento **y total nacional** — para calcular qué peso real tiene cada provincia |
 | Forestación | Ministerio de Ambiente — Bosque nativo | Superficie de bosque nativo (proxy — **no** es superficie implantada comercial; esa fuente sigue pendiente) |
 | Macro | API de Series de Tiempo (BCRA/MAE/Rofex) | Tipo de cambio oficial mayorista (A3500) |
 | Macro | api.argentinadatos.com | Dólar blue (venta), diario desde 2011 |
@@ -50,6 +52,16 @@ contra el pico real de mayo 2022, en realidad cotiza en centavos como soja/maíz
   nacional — Ganancias, Ingresos Brutos e Impuesto Inmobiliario Rural varían por provincia
   y situación fiscal, y **no** se estiman (se marcan como "consultar contador" en vez de
   inventar una tasa que probablemente esté mal).
+- **Peso en el total nacional** (`src/application/use_cases/national_share.py`): producción
+  agrícola y existencia bovina también se ingieren SIN filtrar por provincia (24 provincias
+  reales, no solo nuestras 5) — el mapa puede mostrar qué % del total del país representa
+  cada provincia, no solo el peso relativo entre ellas. Verificado con datos reales: Santa Fe
+  ~35% de la producción nacional de soja, Buenos Aires ~34% del rodeo bovino nacional.
+- **Catálogo de razas bovinas** (`src/application/use_cases/cattle_breeds.py`): raza, color,
+  rusticidad, resistencia a garrapata y desempeño en engorde — conocimiento zootécnico
+  general y citado (Asociación Braford Argentina, AAPRESID), no una serie ingerida. La
+  recomendación por zona está verificada: en el NEA (Corrientes) el Braford es +60% de los
+  rodeos por su resistencia a garrapata/humedad frente a las razas británicas puras.
 
 ---
 
@@ -62,12 +74,16 @@ contra el pico real de mayo 2022, en realidad cotiza en centavos como soja/maíz
 - `src/infrastructure/` — extractors (CSV de MAGyP/ambiente, API de series de tiempo) y el
   repositorio de series en Postgres.
 - `src/interfaces/cli.py` — `python main.py ingest` / `python main.py evaluate`.
-- `src/interfaces/dashboard.py` — dashboard Streamlit con 8 pestañas: series históricas (filtro
+- `src/interfaces/theme.py` — paleta validada (CVD-safe, contraste verificado) aplicada
+  consistentemente: color fijo por provincia/cultivo en todos los gráficos, secuencial de un
+  solo tono para magnitud, divergente para correlación — no un color por gráfico al azar.
+- `src/interfaces/dashboard.py` — dashboard Streamlit con 9 pestañas: series históricas (filtro
   de fecha + proyección de tendencia), estadísticas descriptivas + histograma, mapa geográfico
-  (departamento o provincia, con leyenda y ranking top/bottom), series apiladas (índice base
-  100), comparativa anual (ingreso bruto por cultivo), matriz de correlación + cruce de
-  variables, asistente de zona (rinde/arrendamiento/precio de tierra/retenciones), y evaluador
-  de proyecto.
+  (departamento/provincia, promedio histórico / **animado año a año** / **% del total
+  nacional**, con leyenda y ranking top/bottom), series apiladas (índice base 100),
+  comparativa anual (ingreso bruto por cultivo), matriz de correlación + cruce de variables,
+  asistente de zona (rinde/arrendamiento/precio de tierra/retenciones), **ganadería** (catálogo
+  de razas con radar comparativo y recomendación por zona), y evaluador de proyecto.
 - `data/`, `models/`, `reports/`, `notebooks/` — artefactos generados, gitignored salvo estructura.
 - `tests/unit/`, `tests/integration/`
 
@@ -123,8 +139,10 @@ DATABASE_URL="postgresql://..." python main.py ingest
    bruto real, cruce de variables, proyección de tendencia y narrativa automática.
 4. ✅ Zonificación departamental en el mapa, series apiladas, asistente de zona (rinde,
    arrendamiento, precio de tierra, retenciones).
-5. Noticias y cambios de precio en la cadena (con lectura de noticias, no solo tendencia).
-6. Manual gráfico del modelo + UX de los dashboards.
+5. ✅ Mapa animado en el tiempo, % del total nacional, catálogo de razas bovinas con
+   recomendación por zona, sistema de diseño consistente (paleta validada CVD-safe).
+6. Noticias y cambios de precio en la cadena (con lectura de noticias, no solo tendencia).
+7. Manual gráfico del modelo + UX de los dashboards.
 
 ---
 
