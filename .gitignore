@@ -2,3 +2,13 @@
 __pycache__/
 *.pyc
 .env
+*.egg-info/
+.venv/
+.ruff_cache/
+
+# Datos pesados a nivel workspace: se conserva la estructura de carpetas (.gitkeep),
+# no su contenido.
+datasets/*/*
+!datasets/*/.gitkeep
+backups/*
+!backups/.gitkeep

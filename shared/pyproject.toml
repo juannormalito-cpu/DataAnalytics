@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "shared-core"
+version = "0.1.0"
+description = "Shared internal library for DataAnalytics projects: config, logging, database, IO and ETL contracts."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Facu" }
+]
+dependencies = [
+    "pandas",
+    "SQLAlchemy",
+    "python-dotenv",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shared_core"]

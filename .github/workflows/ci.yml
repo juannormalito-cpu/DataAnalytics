@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ruff and pytest
+        run: pip install ruff pytest
+
+      - name: Install shared-core
+        run: pip install -e shared/
+
+      - name: Install each project
+        run: |
+          for project in projects/*/; do
+            pip install -e "$project"
+          done
+
+      - name: Lint (shared + templates + projects)
+        run: ruff check shared templates projects
+
+      - name: Test shared-core
+        run: pytest shared/tests
+
+      - name: Test each project
+        run: |
+          for project in projects/*/; do
+            echo "Testing $project"
+            (cd "$project" && pytest)
+          done

@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "steam_intelligence"
+version = "0.1.0"
+description = "Data Engineering and Analytics platform for Steam games"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Facu" }
+]
+dependencies = [
+    "pandas",
+    "SQLAlchemy",
+    "psycopg2-binary",
+    "python-dotenv",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
