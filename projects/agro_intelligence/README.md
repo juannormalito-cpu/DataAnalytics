@@ -91,6 +91,30 @@ streamlit run src/interfaces/dashboard.py   # dashboard interactivo
 
 ---
 
+## Compartir el dashboard (Streamlit Community Cloud + Neon)
+
+Ya está ingerido en una base Neon (Postgres gratis en la nube), verificado con
+`.streamlit/secrets.toml` local antes de subir nada:
+
+1. Subir este repo a GitHub.
+2. En [share.streamlit.io](https://share.streamlit.io): conectar el repo, archivo principal
+   `projects/agro_intelligence/src/interfaces/dashboard.py`.
+3. En **Settings → Secrets** de la app, pegar el contenido de
+   `.streamlit/secrets.toml.example` con los valores reales (`DATABASE_URL` de Neon, etc.)
+   — nunca en el código ni en el repo.
+
+`dashboard.py` copia `st.secrets` a variables de entorno al arrancar (Streamlit Cloud no
+las expone como env vars por sí solo) — probado localmente sacando el `.env` del medio y
+confirmando que sigue andando solo con `.streamlit/secrets.toml` (gitignored).
+
+Para reingestar contra una base distinta a la local sin tocar `.env`:
+
+```bash
+DATABASE_URL="postgresql://..." python main.py ingest
+```
+
+---
+
 ## Roadmap
 
 1. ✅ Esqueleto + dominio + un extractor real por vertical + motor financiero.

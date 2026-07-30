@@ -5,6 +5,7 @@ negocio propia. Se corre con:
     streamlit run src/interfaces/dashboard.py
 """
 
+import os
 from datetime import date
 
 import pandas as pd
@@ -60,6 +61,19 @@ PROVINCE_CENTROIDS = {
     "Corrientes": (-28.7742, -57.8011),
     "Córdoba": (-32.1448, -63.8020),
 }
+
+
+# En Streamlit Community Cloud las credenciales se cargan como "Secrets" (st.secrets),
+# no como variables de entorno ni un .env real — no hay .env en el deploy. Este bloque
+# las copia a os.environ si existen, para que load_settings() (que lee os.environ) las
+# vea igual que en local. Si no hay secrets.toml (desarrollo local), st.secrets está
+# vacío y esto no hace nada.
+try:
+    for _secret_key in ("DATABASE_URL", "LOG_LEVEL", "COMMODITY_API_KEY"):
+        if _secret_key in st.secrets:
+            os.environ.setdefault(_secret_key, st.secrets[_secret_key])
+except Exception:
+    pass
 
 
 @st.cache_resource
