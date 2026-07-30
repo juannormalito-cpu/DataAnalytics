@@ -1,0 +1,7 @@
+# Streamlit Community Cloud instala dependencias buscando en la RAÍZ del repo, no en la
+# carpeta del proyecto que corre (projects/agro_intelligence/) — este archivo es lo que
+# encuentra. Instala shared_core y agro_intelligence como paquetes locales editables; cada
+# uno declara sus propias dependencias reales en su propio pyproject.toml, pip las resuelve
+# igual.
+-e ./shared
+-e ./projects/agro_intelligence

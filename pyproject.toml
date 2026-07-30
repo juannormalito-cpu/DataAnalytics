@@ -1,3 +1,9 @@
+[project]
+name = "dataanalytics-workspace"
+version = "0.0.0"
+description = "Config-only root: ruff config compartido. Las dependencias reales de cada proyecto viven en su propio pyproject.toml (projects/<nombre>/pyproject.toml) o, para deploys que solo miran la raíz (ej. Streamlit Community Cloud), en requirements.txt."
+requires-python = ">=3.11"
+
 [tool.ruff]
 line-length = 100
 target-version = "py313"
