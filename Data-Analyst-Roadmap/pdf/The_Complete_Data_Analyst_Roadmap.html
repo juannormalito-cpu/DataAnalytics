@@ -1,0 +1,1720 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>The Complete Data Analyst & Data Science Roadmap</title>
+<style>
+@page {
+    size: A4;
+    margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+    @top-center { content: "The Complete Data Analyst & Data Science Roadmap"; font-size: 8pt; color: #888; }
+    @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 8pt; color: #888; }
+}
+@page cover { @top-center { content: ""; } @bottom-center { content: ""; } }
+body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1a1a; line-height: 1.55; font-size: 10.5pt; }
+h1 { font-size: 22pt; color: #0b5fff; border-bottom: 3px solid #0b5fff; padding-bottom: 6px; page-break-before: always; }
+h2 { font-size: 15pt; color: #111; margin-top: 1.4em; }
+h3 { font-size: 12.5pt; color: #333; }
+code { background: #f2f4f8; padding: 1px 4px; border-radius: 3px; font-family: 'Cascadia Code', Consolas, monospace; font-size: 9pt; }
+pre { background: #0b1021; color: #e6e6e6; padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-size: 8.5pt; }
+pre code { background: none; color: inherit; }
+blockquote { border-left: 4px solid #0b5fff; background: #f5f8ff; margin: 1em 0; padding: 0.6em 1em; border-radius: 0 4px 4px 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 9.5pt; }
+th, td { border: 1px solid #ddd; padding: 5px 8px; text-align: left; }
+th { background: #f2f4f8; }
+a { color: #0b5fff; text-decoration: none; }
+.cover { page: cover; page-break-after: always; text-align: center; padding-top: 30%; }
+.cover h1 { border: none; font-size: 30pt; page-break-before: avoid; }
+.cover p { font-size: 12pt; color: #555; }
+.toc { page-break-after: always; }
+.toc a { display: block; margin: 4px 0; }
+.mermaid, pre.mermaid { background: #f9f9fb; border: 1px dashed #ccc; padding: 8px; font-size: 8pt; }
+</style></head>
+<body>
+    <div class="cover">
+        <h1>The Complete Data Analyst & Data Science Roadmap</h1>
+        <p>A premium, company-grade handbook from beginner/intermediate<br>
+        to professional Data Analyst — with a runway into Data Science.</p>
+        <p style="margin-top:3em;">Compiled 2026-07-31</p>
+    </div>
+    <div class="toc"><h1>Table of Contents</h1><a href="#chapter-01">01 · Introduction</a><a href="#chapter-02">02 · How Companies Work</a><a href="#chapter-03">03 · Databases</a><a href="#chapter-04">04 · SQL — The Complete Course</a><a href="#chapter-05">05 · Python</a><a href="#chapter-06">06 · Power BI</a><a href="#chapter-07">07 · Professional Projects</a><a href="#chapter-08">08 · Machine Learning</a><a href="#chapter-09">09 · Portfolio & Career</a></div><section id="chapter-01"><h1 id="01-introduction">01 · Introduction</h1>
+<p><em>Part 1 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Explain, in an interview or to a non-technical stakeholder, exactly what a Data Analyst does differently from a Data Scientist, a Data Engineer, and an Analytics Engineer — and pick which of those career paths to aim for, with a realistic sense of skills, salary, and daily work.</p>
+</blockquote>
+<hr />
+<h2 id="11-what-is-data">1.1 What is Data?</h2>
+<p>Forget the textbook definition for a second. Inside a company, <strong>data is exhaust</strong>. Every action a user takes, every system that runs, every transaction that clears — leaves a trace. A click, a payment, a delivery scan, a support ticket, a sensor reading.</p>
+<p>Nobody sets out to "collect data." Data is a <em>byproduct</em> of the business running. Your job, in every role this handbook covers, is to take that byproduct and turn it into something the business can act on.</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[User does something] --&gt; B[App records an event]
+    B --&gt; C[Event lands in a database]
+    C --&gt; D[&quot;Someone asks a question\n('why did signups drop?')&quot;]
+    D --&gt; E[You turn raw records into an answer]
+    E --&gt; F[Business makes a decision]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+At <strong>Spotify</strong>, playing a song, skipping it after 4 seconds, or adding it to a playlist are all events. None of them were generated "for analytics" — they're just what the app does when you use it. The Data team's entire job starts <em>after</em> that event already exists.</p>
+</blockquote>
+<p>Data on its own is worthless. It becomes valuable the moment someone turns it into a decision — that transformation, from raw event to decision, is what this entire handbook teaches, one layer at a time:</p>
+<pre><code>Users → Applications → Operational Database → ETL/ELT → Data Warehouse
+      → SQL → Python → Power BI → Business Decision → Machine Learning → Deployment
+</code></pre>
+<p>You'll see this exact pipeline again in <a href="02_How_Companies_Work.md">Chapter 02</a>, where each arrow gets its own deep dive.</p>
+<hr />
+<h2 id="12-the-six-roles-and-how-they-actually-differ">1.2 The six roles, and how they actually differ</h2>
+<p>Job titles in data are inconsistent across companies — a "Data Analyst" at one company does what a "Data Scientist" does at another. But the <em>work itself</em> clusters into six recognizable jobs. Here's how to tell them apart by what they actually spend their day doing, not by their title.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Core question they answer</th>
+<th>Primary tools</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Business Intelligence (BI) Analyst</strong></td>
+<td>"What happened, and how do I make it visible to everyone?"</td>
+<td>SQL, Power BI / Tableau</td>
+<td>Dashboards, recurring reports</td>
+</tr>
+<tr>
+<td><strong>Data Analyst</strong></td>
+<td>"Why did it happen, and what should we do?"</td>
+<td>SQL, Excel, Python, Power BI</td>
+<td>Ad-hoc analysis, insights, decks</td>
+</tr>
+<tr>
+<td><strong>Data Scientist</strong></td>
+<td>"What will happen, and how confident are we?"</td>
+<td>Python, statistics, ML</td>
+<td>Models, experiments, predictions</td>
+</tr>
+<tr>
+<td><strong>Data Engineer</strong></td>
+<td>"How do we move and store data reliably at scale?"</td>
+<td>SQL, Python, Spark, Airflow, cloud</td>
+<td>Pipelines, warehouses</td>
+</tr>
+<tr>
+<td><strong>Analytics Engineer</strong></td>
+<td>"How do we make clean, trusted data models everyone can query?"</td>
+<td>SQL, dbt, warehouse tooling</td>
+<td>Data models, transformation layer</td>
+</tr>
+<tr>
+<td><strong>ML Engineer</strong></td>
+<td>"How do we get a model running reliably in production?"</td>
+<td>Python, APIs, Docker, cloud, MLOps</td>
+<td>Deployed, monitored models</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Callout — the fastest way to tell two roles apart</strong>
+Ask: <em>"What do they hand off, and to whom?"</em>
+- A <strong>BI Analyst</strong> hands a dashboard to an executive.
+- A <strong>Data Analyst</strong> hands an insight to a decision-maker.
+- A <strong>Data Scientist</strong> hands a model or a tested hypothesis to a Data Analyst or a product team.
+- A <strong>Data Engineer</strong> hands clean, reliable tables to everyone above.
+- An <strong>Analytics Engineer</strong> hands trusted, documented data <em>models</em> (not raw tables) to Analysts and Scientists.
+- An <strong>ML Engineer</strong> hands a running, monitored service to the product itself.</p>
+</blockquote>
+<h3 id="how-this-looks-inside-a-real-company">How this looks inside a real company</h3>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Engineering
+        DE[Data Engineer\nbuilds pipelines &amp; warehouse]
+        AE[Analytics Engineer\nmodels the warehouse into\nclean, reusable tables]
+    end
+    subgraph Analysis
+        BI[BI Analyst\ndashboards &amp; reporting]
+        DA[Data Analyst\nad-hoc insight &amp; investigation]
+    end
+    subgraph Science
+        DS[Data Scientist\nmodeling &amp; experimentation]
+        MLE[ML Engineer\nproductionizing models]
+    end
+    DE --&gt; AE --&gt; BI
+    AE --&gt; DA
+    AE --&gt; DS
+    DS --&gt; MLE
+    BI --&gt; Biz[Business Decision]
+    DA --&gt; Biz
+    MLE --&gt; Prod[Live Product Feature]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+At <strong>Mercado Libre</strong>, when a Product Manager asks "why is cart abandonment up in Brazil?", a <strong>Data Analyst</strong> answers it with SQL and a deck within days. If the answer becomes "we should build a model to predict who's about to abandon their cart," that becomes a <strong>Data Scientist</strong> project — and if it ships as a live discount-trigger in the app, an <strong>ML Engineer</strong> puts it into production and keeps it running.</p>
+</blockquote>
+<hr />
+<h2 id="13-daily-responsibilities-role-by-role">1.3 Daily responsibilities, role by role</h2>
+<h3 id="bi-analyst">BI Analyst</h3>
+<ul>
+<li>Maintain and extend recurring dashboards (revenue, retention, ops metrics)</li>
+<li>Own metric definitions so "revenue" means the same thing to everyone</li>
+<li>Triage "the dashboard looks wrong" tickets</li>
+<li>Present weekly/monthly business reviews</li>
+</ul>
+<h3 id="data-analyst">Data Analyst</h3>
+<ul>
+<li>Get pulled into a Slack thread with a vague question ("are we losing money on this promo?") and turn it into a scoped analysis</li>
+<li>Write SQL against the warehouse, sanity-check the numbers, visualize them</li>
+<li>Present findings with a clear recommendation, not just a chart</li>
+<li>Partner with Product/Marketing/Finance stakeholders directly</li>
+</ul>
+<h3 id="data-scientist">Data Scientist</h3>
+<ul>
+<li>Frame a business problem as a modeling problem (classification, regression, ranking, etc.)</li>
+<li>Explore data, engineer features, train and validate models</li>
+<li>Design and read A/B test results</li>
+<li>Communicate uncertainty and trade-offs to non-technical stakeholders</li>
+</ul>
+<h3 id="data-engineer">Data Engineer</h3>
+<ul>
+<li>Build and maintain ETL/ELT pipelines</li>
+<li>Design warehouse schemas for reliability and query performance</li>
+<li>Own data quality checks, alerting, and pipeline SLAs</li>
+<li>Manage cloud infrastructure costs and scaling</li>
+</ul>
+<h3 id="analytics-engineer">Analytics Engineer</h3>
+<ul>
+<li>Write and test transformation logic (commonly in dbt) on top of raw warehouse data</li>
+<li>Document tables and columns so self-serve analytics actually works</li>
+<li>Own the "single source of truth" layer between raw data and everyone who queries it</li>
+<li>Bridge the gap between Data Engineering and Analysis</li>
+</ul>
+<h3 id="ml-engineer">ML Engineer</h3>
+<ul>
+<li>Take a Data Scientist's notebook and turn it into a reliable service</li>
+<li>Build training/inference pipelines, APIs, monitoring, and retraining triggers</li>
+<li>Manage model versioning and rollback</li>
+<li>Own latency, cost, and uptime of ML in production</li>
+</ul>
+<hr />
+<h2 id="14-career-paths">1.4 Career paths</h2>
+<p>None of these roles are dead ends — they're a graph, not a ladder. The most common entry point for this handbook's audience is <strong>Data Analyst</strong>, and the two dominant paths from there are:</p>
+<pre><code class="language-mermaid">flowchart LR
+    Start([Junior Data Analyst]) --&gt; DA[Data Analyst]
+    DA --&gt; SDA[Senior Data Analyst]
+    SDA --&gt; AE[Analytics Engineer]
+    SDA --&gt; DS[Data Scientist]
+    AE --&gt; DEng[Data Engineer]
+    DS --&gt; MLE[ML Engineer]
+    SDA --&gt; LeadA[Analytics Manager]
+    DS --&gt; LeadD[Data Science Manager]
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Don't try to pick your final destination on day one. Start as a Data Analyst, get fluent in SQL and business context, and let the work itself tell you whether you enjoy the "build reliable systems" side (→ Analytics/Data Engineering) or the "model uncertainty" side (→ Data Science) more.</p>
+<p>⚠️ <strong>Common mistake</strong>
+Jumping straight to Machine Learning tutorials without ever having queried a real, messy, undocumented production database. Companies don't hire ML Engineers who can't handle dirty data — they hire Analysts who grew into it. <a href="08_Machine_Learning.md">Chapter 08</a> assumes you've been through <a href="03_Databases.md">Chapters 03–05</a> first for exactly this reason.</p>
+</blockquote>
+<hr />
+<h2 id="15-salary-ranges-indicative-benchmarks">1.5 Salary ranges (indicative benchmarks)</h2>
+<p>Salaries vary enormously by country, company size, and seniority — treat these as <strong>directional</strong>, not contractual.</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>LatAm (remote, USD/yr)</th>
+<th>US (onsite/remote, USD/yr)</th>
+<th>EU (onsite/remote, EUR/yr)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BI Analyst</td>
+<td>$18k – $40k</td>
+<td>$65k – $100k</td>
+<td>€35k – €60k</td>
+</tr>
+<tr>
+<td>Data Analyst</td>
+<td>$20k – $45k</td>
+<td>$70k – $110k</td>
+<td>€38k – €65k</td>
+</tr>
+<tr>
+<td>Senior Data Analyst</td>
+<td>$35k – $65k</td>
+<td>$100k – $140k</td>
+<td>€55k – €85k</td>
+</tr>
+<tr>
+<td>Data Scientist</td>
+<td>$30k – $60k</td>
+<td>$110k – $165k</td>
+<td>€55k – €95k</td>
+</tr>
+<tr>
+<td>Data Engineer</td>
+<td>$30k – $65k</td>
+<td>$115k – $170k</td>
+<td>€55k – €95k</td>
+</tr>
+<tr>
+<td>Analytics Engineer</td>
+<td>$30k – $60k</td>
+<td>$110k – $155k</td>
+<td>€55k – €90k</td>
+</tr>
+<tr>
+<td>ML Engineer</td>
+<td>$35k – $75k</td>
+<td>$130k – $190k</td>
+<td>€65k – €110k</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Callout</strong>
+Total compensation (equity, bonuses) at large tech companies (Google, Amazon, Microsoft, Stripe) can push the upper end of the US range 30–60% higher. LatAm ranges above assume <strong>remote work for a foreign company</strong> — local-market-only salaries are typically 40–60% lower.</p>
+</blockquote>
+<hr />
+<h2 id="16-required-skills-matrix">1.6 Required skills matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th style="text-align: center;">BI Analyst</th>
+<th style="text-align: center;">Data Analyst</th>
+<th style="text-align: center;">Data Scientist</th>
+<th style="text-align: center;">Data Engineer</th>
+<th style="text-align: center;">Analytics Engineer</th>
+<th style="text-align: center;">ML Engineer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+</tr>
+<tr>
+<td>Excel / Spreadsheets</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+</tr>
+<tr>
+<td>Python</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Statistics</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+</tr>
+<tr>
+<td>Data Visualization (Power BI/Tableau)</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+</tr>
+<tr>
+<td>Data Modeling / Warehousing</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+</tr>
+<tr>
+<td>Machine Learning</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Software Engineering / APIs</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Business Communication</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+</tr>
+<tr>
+<td>Cloud Platforms (AWS/Azure/GCP)</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+</tbody>
+</table>
+<p><code>●●●</code> core to the role · <code>●●○</code> important · <code>●○○</code> useful · <code>○○○</code> rarely needed</p>
+<p>This handbook builds these skills in the order most companies actually need them: <strong>Databases → SQL → Python → Power BI → Projects → Machine Learning → Portfolio</strong>, matching the pipeline from §1.1.</p>
+<hr />
+<h2 id="17-recommended-books">1.7 Recommended books</h2>
+<table>
+<thead>
+<tr>
+<th>Book</th>
+<th>Author</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>SQL for Data Analysis</em></td>
+<td>Cathy Tanimura</td>
+<td>SQL fundamentals with real analytical patterns</td>
+</tr>
+<tr>
+<td><em>Storytelling with Data</em></td>
+<td>Cole Nussbaumer Knaflic</td>
+<td>Turning charts into decisions people act on</td>
+</tr>
+<tr>
+<td><em>Python for Data Analysis</em></td>
+<td>Wes McKinney (creator of Pandas)</td>
+<td>The definitive Pandas reference</td>
+</tr>
+<tr>
+<td><em>The Data Warehouse Toolkit</em></td>
+<td>Ralph Kimball</td>
+<td>Star schema, dimensional modeling — foundational for Ch.03</td>
+</tr>
+<tr>
+<td><em>Practical Statistics for Data Scientists</em></td>
+<td>Peter Bruce, Andrew Bruce, Peter Gedeck</td>
+<td>Statistics with a practitioner's lens, not a professor's</td>
+</tr>
+<tr>
+<td><em>Designing Data-Intensive Applications</em></td>
+<td>Martin Kleppmann</td>
+<td>For when you want to understand what Data Engineers actually build</td>
+</tr>
+<tr>
+<td><em>Hands-On Machine Learning with Scikit-Learn, Keras &amp; TensorFlow</em></td>
+<td>Aurélien Géron</td>
+<td>The standard practical ML reference</td>
+</tr>
+</tbody>
+</table>
+<h2 id="18-recommended-youtube-channels">1.8 Recommended YouTube channels</h2>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Luke Barousse</strong></td>
+<td>Data Analyst career advice, real job-market insight</td>
+</tr>
+<tr>
+<td><strong>Alex The Analyst</strong></td>
+<td>SQL, Power BI, and Data Analyst fundamentals from scratch</td>
+</tr>
+<tr>
+<td><strong>StatQuest with Josh Starmer</strong></td>
+<td>Statistics and ML concepts explained visually, no fluff</td>
+</tr>
+<tr>
+<td><strong>Seattle Data Guy</strong></td>
+<td>Data Engineering and career strategy from an industry practitioner</td>
+</tr>
+<tr>
+<td><strong>Ken Jee</strong></td>
+<td>Data Science career paths and portfolio-building</td>
+</tr>
+<tr>
+<td><strong>Corey Schafer</strong></td>
+<td>Deep, correct Python fundamentals</td>
+</tr>
+<tr>
+<td><strong>Guy in a Cube</strong></td>
+<td>Power BI straight from a former Microsoft Power BI team member</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Data has no value until it's turned into a decision — that transformation is the job, across every role in this field.</li>
+<li>BI Analyst, Data Analyst, Data Scientist, Data Engineer, Analytics Engineer, and ML Engineer are six distinct jobs distinguished by <em>what they hand off and to whom</em>, not by title alone.</li>
+<li>Most people entering this field should start as a <strong>Data Analyst</strong> and branch toward Data Science or Analytics/Data Engineering based on what part of the job they enjoy.</li>
+<li>Skills compound in a specific order — this handbook follows that order starting in <a href="02_How_Companies_Work.md">Chapter 02</a>.</li>
+</ul>
+<p><strong>Next:</strong> <a href="02_How_Companies_Work.md">02. How Companies Work →</a> — how data is actually generated and stored before anyone gets to analyze it.</p></section><section id="chapter-02"><h1 id="02-how-companies-work">02 · How Companies Work</h1>
+<p><em>Part 2 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="01_Introduction.md">01. Introduction</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Draw and explain the real data architecture of a modern company — from a user tapping a button to an executive seeing a number on a dashboard — and know when a company reaches for a Data Warehouse vs. a Data Lake vs. a Lakehouse, and batch vs. streaming.</p>
+</blockquote>
+<hr />
+<h2 id="21-how-data-is-generated">2.1 How data is generated</h2>
+<p>Every company runs on <strong>applications</strong> — the mobile app, the website, the point-of-sale system, the internal admin tool. Those applications need to remember things <em>right now</em>: did the payment go through, is the item still in stock, is the user logged in. That immediate, transactional memory lives in an <strong>operational database</strong> (also called OLTP — see <a href="03_Databases.md">Chapter 03</a>).</p>
+<pre><code class="language-mermaid">flowchart LR
+    U[User] --&gt;|clicks / buys / signs up| App[Application]
+    App --&gt;|reads/writes rows| DB[(Operational Database\nOLTP)]
+    App2[Backend services] --&gt;|writes events| DB
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+When you add an item to your cart on <strong>Mercado Libre</strong>, that write goes straight into an operational database optimized for <em>speed and correctness of a single transaction</em> — not for answering "what were our top 10 categories last month?" That question needs a completely different system, which is where the rest of this chapter comes in.</p>
+</blockquote>
+<hr />
+<h2 id="22-operational-database-data-warehouse">2.2 Operational Database → Data Warehouse</h2>
+<p>Operational databases are built to handle thousands of small, fast read/write transactions. They are <strong>bad</strong> at answering big analytical questions ("total revenue by region, by month, for the last 3 years") because that kind of query scans huge amounts of data — and running that against the live database would slow down the app for real users.</p>
+<p>So companies copy the data out into a second system, purpose-built for analysis: the <strong>Data Warehouse</strong>.</p>
+<pre><code class="language-mermaid">flowchart LR
+    DB[(Operational DB\nOLTP)] --&gt;|ETL / ELT| DW[(Data Warehouse\nOLAP)]
+    DW --&gt; SQL[SQL Analysis]
+    DW --&gt; BI[Power BI / Tableau]
+    DW --&gt; DS[Data Science / ML]
+</code></pre>
+<p>The process that moves and reshapes the data between these two systems is called <strong>ETL</strong> or <strong>ELT</strong>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ETL (Extract, Transform, Load)</th>
+<th>ELT (Extract, Load, Transform)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Order</td>
+<td>Transform <em>before</em> loading</td>
+<td>Transform <em>after</em> loading</td>
+</tr>
+<tr>
+<td>Where transformation happens</td>
+<td>A separate processing engine</td>
+<td>Inside the warehouse itself</td>
+</tr>
+<tr>
+<td>Common today because</td>
+<td>Warehouses are now powerful enough to transform data at scale</td>
+<td>Cloud warehouses (Snowflake, BigQuery, Redshift) are cheap to run big transformations in</td>
+</tr>
+<tr>
+<td>Typical tooling</td>
+<td>Informatica, legacy SSIS, custom scripts</td>
+<td>Airbyte/Fivetran (extract+load) + dbt (transform)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Modern cloud-first companies default to <strong>ELT</strong>: land raw data in the warehouse first, then transform it with SQL/dbt where it's easy to test, version, and re-run. This is also the layer where <strong>Analytics Engineers</strong> live (see <a href="01_Introduction.md#12-the-six-roles-and-how-they-actually-differ">01.2</a>).</p>
+<p>⚠️ <strong>Common mistake</strong>
+Querying the operational (production) database directly for analytics. This is how junior analysts accidentally slow down — or crash — the live app. Always analyze from the warehouse or a read replica, never the primary production database.</p>
+</blockquote>
+<hr />
+<h2 id="23-data-warehouse-vs-data-lake-vs-lakehouse">2.3 Data Warehouse vs. Data Lake vs. Lakehouse</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Data Warehouse</th>
+<th>Data Lake</th>
+<th>Lakehouse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data shape</td>
+<td>Structured (tables, rows, columns)</td>
+<td>Any shape — structured, semi-structured, raw files, images, logs</td>
+<td>Structured + unstructured, unified</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>Enforced on write (schema-on-write)</td>
+<td>Enforced on read (schema-on-read)</td>
+<td>Both, depending on layer</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>BI dashboards, SQL analytics</td>
+<td>ML training data, raw logs, data science exploration</td>
+<td>Everything — one platform for both</td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>Snowflake, BigQuery, Redshift</td>
+<td>S3 + Hive/Glue, Azure Data Lake</td>
+<td>Databricks, Snowflake (Iceberg), BigQuery (unified)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+A company like <strong>Netflix</strong> dumps raw viewing-event logs into a <strong>Data Lake</strong> because the volume and variety is enormous and not every team needs it structured. The BI team then builds a curated, structured layer on top — either a classic <strong>Data Warehouse</strong> or, increasingly, a <strong>Lakehouse</strong> that lets both SQL analysts and ML teams work off the same underlying storage without duplicating data.</p>
+</blockquote>
+<hr />
+<h2 id="24-batch-vs-streaming">2.4 Batch vs. Streaming</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Batch Processing</th>
+<th>Streaming</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data moves</td>
+<td>On a schedule (hourly, nightly)</td>
+<td>Continuously, as events happen</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td>Minutes to hours</td>
+<td>Milliseconds to seconds</td>
+</tr>
+<tr>
+<td>Typical tools</td>
+<td>Airflow + SQL/dbt jobs, scheduled Python scripts</td>
+<td>Kafka, Kinesis, Flink, Spark Streaming</td>
+</tr>
+<tr>
+<td>Typical use case</td>
+<td>Daily revenue dashboard, monthly reports</td>
+<td>Fraud detection, real-time recommendations, live inventory</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Callout</strong>
+Most <strong>Data Analyst</strong> work happens on top of <strong>batch-processed</strong> data — a dashboard that refreshes every morning is completely normal and expected. Streaming is a Data/ML Engineering concern you'll encounter, but rarely build yourself as an analyst.</p>
+</blockquote>
+<hr />
+<h2 id="25-cloud-platforms-aws-azure-google-cloud">2.5 Cloud platforms: AWS, Azure, Google Cloud</h2>
+<p>You don't need to master any cloud provider to start as a Data Analyst, but you will constantly hear these names — know what they're for.</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Warehouse</th>
+<th>Storage (Lake)</th>
+<th>BI Tool</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AWS</strong></td>
+<td>Redshift</td>
+<td>S3</td>
+<td>QuickSight (rare)</td>
+<td>Most common cloud overall; often paired with Power BI or Tableau</td>
+</tr>
+<tr>
+<td><strong>Azure</strong></td>
+<td>Synapse Analytics</td>
+<td>Azure Data Lake Storage</td>
+<td><strong>Power BI</strong> (native)</td>
+<td>Common in enterprises already on Microsoft stack</td>
+</tr>
+<tr>
+<td><strong>Google Cloud</strong></td>
+<td><strong>BigQuery</strong></td>
+<td>Cloud Storage</td>
+<td>Looker / Looker Studio</td>
+<td>Popular with tech-native, high-growth companies</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+When you see a job posting say "SQL + BigQuery" or "SQL + Snowflake," don't panic — the SQL you learn in <a href="04_SQL.md">Chapter 04</a> is 90% transferable. The differences are mostly dialect syntax and how you connect, not how you think about queries.</p>
+</blockquote>
+<hr />
+<h2 id="26-the-full-picture">2.6 The full picture</h2>
+<pre><code class="language-mermaid">flowchart TB
+    U[Users] --&gt; App[Applications]
+    App --&gt; OLTP[(Operational Database\nOLTP)]
+    OLTP --&gt;|ELT| DW[(Data Warehouse)]
+    Lake[(Data Lake\nraw/unstructured)] --&gt; DW
+    DW --&gt; SQLA[SQL]
+    SQLA --&gt; PY[Python]
+    PY --&gt; PBI[Power BI]
+    PBI --&gt; Dec[Business Decision]
+    PY --&gt; ML[Machine Learning]
+    ML --&gt; Dep[Deployment]
+    Dep --&gt; App
+</code></pre>
+<p>This is the diagram to keep in your head for the rest of the handbook — every remaining chapter drops into one node of it: <a href="03_Databases.md">Databases</a> and <a href="04_SQL.md">SQL</a> live in the warehouse layer, <a href="05_Python.md">Python</a> and <a href="06_Power_BI.md">Power BI</a> sit on top of it, and <a href="08_Machine_Learning.md">Machine Learning</a> closes the loop back into the product.</p>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Applications write to fast, transactional <strong>operational databases</strong> — never analyze directly against them.</li>
+<li><strong>ETL/ELT</strong> moves and reshapes that data into a <strong>Data Warehouse</strong> built for analysis; modern companies favor ELT with SQL/dbt.</li>
+<li><strong>Data Lakes</strong> hold raw/unstructured data at scale; <strong>Lakehouses</strong> try to unify both worlds.</li>
+<li>Most analyst work runs on <strong>batch</strong> data; <strong>streaming</strong> is a Data/ML Engineering concern.</li>
+<li>AWS, Azure, and GCP each offer a warehouse, a lake, and (for Azure) a native BI tool — the SQL skills you'll build in Chapter 04 transfer across all of them.</li>
+</ul>
+<p><strong>Next:</strong> <a href="03_Databases.md">03. Databases →</a> — what's actually inside that warehouse box, and how it's structured so SQL can be fast.</p></section><section id="chapter-03"><h1 id="03-databases">03 · Databases</h1>
+<p><em>Part 3 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="02_How_Companies_Work.md">02. How Companies Work</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Read and design a relational schema, explain normalization, and design a Star Schema — the skill that makes everything in <a href="04_SQL.md">Chapter 04 (SQL)</a> click into place.</p>
+</blockquote>
+<hr />
+<h2 id="31-relational-databases-in-one-picture">3.1 Relational databases, in one picture</h2>
+<p>A relational database stores data in <strong>tables</strong> (rows × columns), and tables relate to each other through <strong>keys</strong>.</p>
+<pre><code class="language-mermaid">erDiagram
+    CUSTOMERS ||--o{ ORDERS : places
+    ORDERS ||--|{ ORDER_ITEMS : contains
+    PRODUCTS ||--o{ ORDER_ITEMS : &quot;appears in&quot;
+
+    CUSTOMERS {
+        int customer_id PK
+        string name
+        string email
+        date signup_date
+    }
+    ORDERS {
+        int order_id PK
+        int customer_id FK
+        date order_date
+        string status
+    }
+    ORDER_ITEMS {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal unit_price
+    }
+    PRODUCTS {
+        int product_id PK
+        string product_name
+        string category
+        decimal price
+    }
+</code></pre>
+<h3 id="primary-keys-foreign-keys">Primary Keys &amp; Foreign Keys</h3>
+<ul>
+<li><strong>Primary Key (PK):</strong> the column (or set of columns) that uniquely identifies each row in a table. <code>customer_id</code> in <code>CUSTOMERS</code>.</li>
+<li><strong>Foreign Key (FK):</strong> a column in one table that points to a Primary Key in another, creating a relationship. <code>customer_id</code> in <code>ORDERS</code> points back to <code>CUSTOMERS</code>.</li>
+</ul>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+At any e-commerce company, <code>orders.customer_id</code> is a foreign key into <code>customers.customer_id</code>. This is <em>how</em> the system knows which customer placed which order — and it's the exact relationship you'll <code>JOIN</code> on constantly in <a href="04_SQL.md">Chapter 04</a>.</p>
+</blockquote>
+<h3 id="indexes">Indexes</h3>
+<p>An <strong>index</strong> is a lookup structure that lets the database find rows without scanning the entire table — the same idea as a book's index letting you skip straight to a page instead of reading cover to cover.</p>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Primary Keys are indexed automatically. As an analyst, the index decision that affects you most is: columns you constantly filter or join on (<code>WHERE customer_id = ...</code>, <code>JOIN ... ON order_id</code>) benefit from an index. You won't usually create indexes yourself, but you'll diagnose slow queries by asking "is this missing one?" — covered in <a href="04_SQL.md#47-performance-indexes--optimization">04.7 Performance &amp; Optimization</a>.</p>
+</blockquote>
+<hr />
+<h2 id="32-normalization">3.2 Normalization</h2>
+<p><strong>Normalization</strong> is the process of organizing tables to eliminate duplicate data and inconsistency.</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Rule</th>
+<th>Fixes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1NF</strong></td>
+<td>Every column holds a single value (no comma-separated lists in a cell)</td>
+<td>Repeating groups in one field</td>
+</tr>
+<tr>
+<td><strong>2NF</strong></td>
+<td>1NF + every non-key column depends on the <em>whole</em> primary key</td>
+<td>Partial dependency in composite keys</td>
+</tr>
+<tr>
+<td><strong>3NF</strong></td>
+<td>2NF + no non-key column depends on another non-key column</td>
+<td>Transitive dependency (e.g., storing <code>city</code> and <code>country</code> when <code>city</code> already determines <code>country</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+Storing <code>customer_name</code> on every single row of the <code>ORDERS</code> table instead of just <code>customer_id</code>. Now if a customer changes their name, you have to update it in a thousand places — and if you miss one, your data is now inconsistent. Normalization exists to prevent exactly this.</p>
+<p>🏢 <strong>Real company example</strong>
+Operational databases (the OLTP systems behind the app) are almost always heavily normalized — it keeps writes fast and consistent. But the <em>warehouse</em> often intentionally <strong>denormalizes</strong> parts of that structure, because analysts value query simplicity and read speed over write efficiency. That trade-off is exactly what a Star Schema is for.</p>
+</blockquote>
+<hr />
+<h2 id="33-star-schema-vs-snowflake-schema">3.3 Star Schema vs. Snowflake Schema</h2>
+<p>Once data lands in the warehouse, it's typically remodeled around <strong>Fact tables</strong> and <strong>Dimension tables</strong>.</p>
+<ul>
+<li><strong>Fact table:</strong> the "what happened" — one row per event/transaction, mostly numbers (measures) and foreign keys.</li>
+<li><strong>Dimension table:</strong> the "who/what/where/when" — descriptive attributes you slice and filter by.</li>
+</ul>
+<pre><code class="language-mermaid">erDiagram
+    FACT_SALES ||--o{ DIM_DATE : &quot;occurred on&quot;
+    FACT_SALES ||--o{ DIM_CUSTOMER : &quot;sold to&quot;
+    FACT_SALES ||--o{ DIM_PRODUCT : &quot;of product&quot;
+    FACT_SALES ||--o{ DIM_STORE : &quot;sold at&quot;
+
+    FACT_SALES {
+        int sale_id PK
+        int date_id FK
+        int customer_id FK
+        int product_id FK
+        int store_id FK
+        decimal revenue
+        int quantity
+    }
+    DIM_DATE { int date_id PK, date full_date, int year, int month, string weekday }
+    DIM_CUSTOMER { int customer_id PK, string name, string segment }
+    DIM_PRODUCT { int product_id PK, string name, string category }
+    DIM_STORE { int store_id PK, string city, string region }
+</code></pre>
+<p>This is a <strong>Star Schema</strong>: one central fact table surrounded directly by flat dimension tables. It's called that because the diagram looks like a star.</p>
+<p>A <strong>Snowflake Schema</strong> takes it further by normalizing the dimensions themselves — e.g., splitting <code>DIM_PRODUCT</code> into <code>DIM_PRODUCT</code> → <code>DIM_CATEGORY</code> → <code>DIM_DEPARTMENT</code>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Star Schema</th>
+<th>Snowflake Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dimensions</td>
+<td>Denormalized (flat)</td>
+<td>Normalized (split into sub-tables)</td>
+</tr>
+<tr>
+<td>Query complexity</td>
+<td>Simpler — fewer joins</td>
+<td>More joins required</td>
+</tr>
+<tr>
+<td>Query speed</td>
+<td>Generally faster</td>
+<td>Can be slower due to extra joins</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Slightly more redundant</td>
+<td>More storage-efficient</td>
+</tr>
+<tr>
+<td>When companies choose it</td>
+<td>Default choice for BI/reporting — favors analyst simplicity</td>
+<td>Very large dimension tables, or strict data governance needs</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+As a Data Analyst, default to expecting a <strong>Star Schema</strong> in a well-built warehouse — it's what <code>Analytics Engineers</code> optimize for, because it's what makes Power BI and SQL fast and understandable. If you're handed a Snowflake Schema, expect more joins in your everyday queries.</p>
+</blockquote>
+<hr />
+<h2 id="34-oltp-vs-olap">3.4 OLTP vs. OLAP</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>OLTP (Online Transaction Processing)</th>
+<th>OLAP (Online Analytical Processing)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Purpose</td>
+<td>Run the business, transaction by transaction</td>
+<td>Analyze the business, in aggregate</td>
+</tr>
+<tr>
+<td>Example system</td>
+<td>The app's production database</td>
+<td>The Data Warehouse</td>
+</tr>
+<tr>
+<td>Query pattern</td>
+<td>Short, simple, high-frequency (<code>INSERT</code>, single-row <code>UPDATE</code>)</td>
+<td>Long, complex, aggregating over millions of rows</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>Normalized</td>
+<td>Star/Snowflake (partially denormalized)</td>
+</tr>
+<tr>
+<td>Who touches it</td>
+<td>The application itself</td>
+<td>Analysts, Scientists, BI tools</td>
+</tr>
+</tbody>
+</table>
+<p>This is the same distinction from <a href="02_How_Companies_Work.md#22-operational-database--data-warehouse">02.2</a> — now you know <em>why</em> the two systems are shaped so differently: OLTP is optimized for <strong>normalized, fast writes</strong>; OLAP is optimized for <strong>denormalized, fast aggregate reads</strong>.</p>
+<hr />
+<h2 id="35-sql-preview">3.5 SQL preview</h2>
+<p>You don't need full SQL fluency yet (<a href="04_SQL.md">Chapter 04</a> is the complete course), but here's how the schema above turns into a real question:</p>
+<pre><code class="language-sql">-- &quot;Total revenue by product category, last quarter&quot;
+SELECT
+    p.category,
+    SUM(f.revenue) AS total_revenue
+FROM fact_sales f
+JOIN dim_product p ON f.product_id = p.product_id
+JOIN dim_date d ON f.date_id = d.date_id
+WHERE d.full_date &gt;= '2026-04-01' AND d.full_date &lt; '2026-07-01'
+GROUP BY p.category
+ORDER BY total_revenue DESC;
+</code></pre>
+<p>Notice how directly this maps to the Star Schema: one <code>JOIN</code> per dimension you need, one <code>GROUP BY</code> for the level of detail you want. That's the entire point of designing it this way.</p>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Relational databases connect tables through <strong>Primary Keys</strong> and <strong>Foreign Keys</strong>; <strong>indexes</strong> make lookups fast.</li>
+<li><strong>Normalization</strong> (1NF–3NF) removes duplication and inconsistency — critical for OLTP systems.</li>
+<li>Warehouses remodel data into <strong>Fact</strong> and <strong>Dimension</strong> tables, typically as a <strong>Star Schema</strong> (simpler, faster) or a <strong>Snowflake Schema</strong> (more normalized, more joins).</li>
+<li><strong>OLTP</strong> runs the business transaction-by-transaction; <strong>OLAP</strong> analyzes it in aggregate — different shapes for different jobs.</li>
+</ul>
+<p><strong>Next:</strong> <a href="04_SQL.md">04. SQL →</a> — the complete SQL course, built directly on the schema concepts from this chapter.</p></section><section id="chapter-04"><h1 id="04-sql-the-complete-course">04 · SQL — The Complete Course</h1>
+<p><em>Part 4 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="03_Databases.md">03. Databases</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Write real analytical SQL end to end — filtering, aggregating, joining, windowing, and optimizing — against the Star Schema from <a href="03_Databases.md">Chapter 03</a>. This is the single highest-leverage skill in the whole handbook.</p>
+</blockquote>
+<p>All examples use the <code>fact_sales</code> / <code>dim_product</code> / <code>dim_customer</code> / <code>dim_date</code> / <code>dim_store</code> schema introduced in <a href="03_Databases.md#33-star-schema-vs-snowflake-schema">03.3</a>. Solutions for every exercise live in <a href="../exercises/04_SQL/solutions/"><code>../exercises/04_SQL/solutions/</code></a>.</p>
+<hr />
+<h2 id="41-select-where-order-by">4.1 SELECT, WHERE, ORDER BY</h2>
+<pre><code class="language-sql">SELECT product_name, category, price
+FROM dim_product
+WHERE category = 'Electronics'
+ORDER BY price DESC;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> Marketing asks for "every Electronics product priced above $50, most expensive first" to plan a promo.</p>
+</blockquote>
+<p><strong>Exercise:</strong> List all customers who signed up in 2025, ordered by signup date.</p>
+<details><summary>Solution</summary>
+
+
+<pre><code class="language-sql">SELECT customer_id, name, signup_date
+FROM dim_customer
+WHERE signup_date &gt;= '2025-01-01' AND signup_date &lt; '2026-01-01'
+ORDER BY signup_date;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="42-group-by-having">4.2 GROUP BY, HAVING</h2>
+<p><code>GROUP BY</code> collapses rows into groups; <code>HAVING</code> filters <em>after</em> aggregation (<code>WHERE</code> filters <em>before</em>).</p>
+<pre><code class="language-sql">SELECT category, SUM(revenue) AS total_revenue
+FROM fact_sales f JOIN dim_product p ON f.product_id = p.product_id
+GROUP BY category
+HAVING SUM(revenue) &gt; 100000;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> Finance wants only categories that generated over $100k — small categories are noise for this review.</p>
+</blockquote>
+<p><strong>Exercise:</strong> Find stores with more than 500 total orders.</p>
+<details><summary>Solution</summary>
+
+
+<pre><code class="language-sql">SELECT store_id, COUNT(*) AS order_count
+FROM fact_sales
+GROUP BY store_id
+HAVING COUNT(*) &gt; 500;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="43-join-union">4.3 JOIN, UNION</h2>
+<table>
+<thead>
+<tr>
+<th>JOIN type</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INNER JOIN</code></td>
+<td>Only rows matching in both tables</td>
+</tr>
+<tr>
+<td><code>LEFT JOIN</code></td>
+<td>All rows from the left table, matched rows from the right (NULL if no match)</td>
+</tr>
+<tr>
+<td><code>RIGHT JOIN</code></td>
+<td>Mirror of LEFT JOIN</td>
+</tr>
+<tr>
+<td><code>FULL OUTER JOIN</code></td>
+<td>All rows from both, matched where possible</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">-- Customers with no orders yet (classic LEFT JOIN use case)
+SELECT c.customer_id, c.name
+FROM dim_customer c
+LEFT JOIN fact_sales f ON c.customer_id = f.customer_id
+WHERE f.customer_id IS NULL;
+</code></pre>
+<p><code>UNION</code> stacks result sets vertically (and removes duplicates; <code>UNION ALL</code> keeps them — and is faster).</p>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> Growth wants a "never purchased" list for a first-order discount campaign — exactly the <code>LEFT JOIN ... WHERE ... IS NULL</code> pattern above.</p>
+</blockquote>
+<p><strong>Exercise:</strong> Combine a list of online orders and in-store orders into one result set, keeping duplicates.</p>
+<details><summary>Solution</summary>
+
+
+<pre><code class="language-sql">SELECT order_id, 'online' AS channel FROM online_orders
+UNION ALL
+SELECT order_id, 'in_store' AS channel FROM instore_orders;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="44-ctes-subqueries">4.4 CTEs &amp; Subqueries</h2>
+<p>A <strong>CTE</strong> (Common Table Expression, <code>WITH</code>) names a subquery so you can build a query in readable steps.</p>
+<pre><code class="language-sql">WITH monthly_revenue AS (
+    SELECT DATE_TRUNC('month', d.full_date) AS month, SUM(f.revenue) AS revenue
+    FROM fact_sales f JOIN dim_date d ON f.date_id = d.date_id
+    GROUP BY 1
+)
+SELECT month, revenue,
+       revenue - LAG(revenue) OVER (ORDER BY month) AS mom_change
+FROM monthly_revenue
+ORDER BY month;
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Prefer CTEs over deeply nested subqueries — they read top-to-bottom like a narrative, and every analyst on your team can debug them piece by piece.</p>
+</blockquote>
+<p><strong>Exercise:</strong> Find the top-spending customer per region using a CTE.</p>
+<details><summary>Solution</summary>
+
+
+<pre><code class="language-sql">WITH customer_totals AS (
+    SELECT c.region, c.customer_id, SUM(f.revenue) AS total_spent
+    FROM fact_sales f JOIN dim_customer c ON f.customer_id = c.customer_id
+    GROUP BY c.region, c.customer_id
+),
+ranked AS (
+    SELECT *, RANK() OVER (PARTITION BY region ORDER BY total_spent DESC) AS rnk
+    FROM customer_totals
+)
+SELECT region, customer_id, total_spent
+FROM ranked
+WHERE rnk = 1;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="45-views-stored-procedures">4.5 Views &amp; Stored Procedures</h2>
+<ul>
+<li><strong>View:</strong> a saved query you can <code>SELECT</code> from like a table — great for hiding complexity from other analysts.</li>
+<li><strong>Stored Procedure:</strong> a saved, parameterized block of SQL (and logic) you <code>CALL</code> — used more by engineers than analysts, but you should recognize one when you see it.</li>
+</ul>
+<pre><code class="language-sql">CREATE VIEW vw_monthly_category_revenue AS
+SELECT DATE_TRUNC('month', d.full_date) AS month, p.category, SUM(f.revenue) AS revenue
+FROM fact_sales f
+JOIN dim_date d ON f.date_id = d.date_id
+JOIN dim_product p ON f.product_id = p.product_id
+GROUP BY 1, 2;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> Instead of every analyst re-writing the same 3-table join every week for the exec dashboard, an <strong>Analytics Engineer</strong> exposes it as a view — this is the "single source of truth" idea from <a href="01_Introduction.md">01.2</a>.</p>
+</blockquote>
+<hr />
+<h2 id="46-window-functions-ranking">4.6 Window Functions &amp; Ranking</h2>
+<p>Window functions compute across a set of rows <em>related to the current row</em>, without collapsing them like <code>GROUP BY</code> does.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROW_NUMBER()</code></td>
+<td>Unique sequential number per row</td>
+</tr>
+<tr>
+<td><code>RANK()</code> / <code>DENSE_RANK()</code></td>
+<td>Ranking with (<code>RANK</code>) or without (<code>DENSE_RANK</code>) gaps on ties</td>
+</tr>
+<tr>
+<td><code>LAG()</code> / <code>LEAD()</code></td>
+<td>Value from a previous/next row</td>
+</tr>
+<tr>
+<td><code>SUM()/AVG() OVER (...)</code></td>
+<td>Running totals, moving averages</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">SELECT
+    customer_id, order_date, revenue,
+    SUM(revenue) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_total
+FROM fact_sales;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> "Show me each customer's cumulative lifetime spend over time" — the classic running-total window function question, and one of the most common SQL interview questions.</p>
+</blockquote>
+<p><strong>Exercise:</strong> For each product, rank its sales by revenue within its category.</p>
+<details><summary>Solution</summary>
+
+
+<pre><code class="language-sql">SELECT
+    p.category, p.product_name, f.revenue,
+    DENSE_RANK() OVER (PARTITION BY p.category ORDER BY f.revenue DESC) AS rank_in_category
+FROM fact_sales f JOIN dim_product p ON f.product_id = p.product_id;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="47-performance-indexes-optimization">4.7 Performance, Indexes &amp; Optimization</h2>
+<blockquote>
+<p>⚠️ <strong>Common mistakes</strong>
+- <code>SELECT *</code> on a wide warehouse table when you need 3 columns — reads far more data than necessary.
+- Filtering on a function applied to a column (<code>WHERE YEAR(order_date) = 2026</code>) — this often prevents the database from using an index. Prefer <code>WHERE order_date &gt;= '2026-01-01' AND order_date &lt; '2027-01-01'</code>.
+- Joining on unindexed columns for large tables — check with your Data Engineer if a hot join path is slow.</p>
+<p>✅ <strong>Best practices</strong>
+- Filter as early as possible (<code>WHERE</code> before <code>JOIN</code>ing more tables than necessary).
+- Read the query's <strong>execution plan</strong> (<code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code>) when a query is unexpectedly slow — it tells you whether it's scanning a full table or using an index.
+- Aggregate at the coarsest level the question actually needs — don't pull row-level data into Python just to sum it there.</p>
+</blockquote>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li><code>SELECT/WHERE/ORDER BY</code> → <code>GROUP BY/HAVING</code> → <code>JOIN</code> are the daily-driver 80% of analyst SQL.</li>
+<li>CTEs make multi-step logic readable; Views expose that logic as reusable, trusted building blocks.</li>
+<li>Window functions solve "compare this row to other rows" problems without collapsing your result set — rankings, running totals, period-over-period change.</li>
+<li>Query performance is mostly about filtering early, avoiding functions on filtered columns, and reading the execution plan when something's slow.</li>
+</ul>
+<p>Full exercise sets (warm-up → challenge → mini project) live in <a href="../exercises/04_SQL/"><code>../exercises/04_SQL/</code></a>.</p>
+<p><strong>Next:</strong> <a href="05_Python.md">05. Python →</a> — where SQL output becomes cleaning, EDA, and feature engineering.</p></section><section id="chapter-05"><h1 id="05-python">05 · Python</h1>
+<p><em>Part 5 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="04_SQL.md">04. SQL</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Take a SQL query result and do everything SQL is bad at: deep cleaning, exploratory analysis, feature engineering, and visualization — organized like a professional project, not a scratch notebook.</p>
+</blockquote>
+<hr />
+<h2 id="51-where-python-fits-and-where-it-doesnt">5.1 Where Python fits (and where it doesn't)</h2>
+<blockquote>
+<p>📌 <strong>Callout</strong>
+Don't pull millions of rows into Python to do what SQL already does well (aggregation, filtering, joining). Use SQL to get the warehouse to do the heavy lifting, then bring the <em>result</em> into Python for what SQL can't do well: statistical modeling, complex cleaning logic, and rich visualization.</p>
+</blockquote>
+<pre><code class="language-mermaid">flowchart LR
+    DW[(Data Warehouse)] --&gt;|SQL query, aggregated| DF[Pandas DataFrame]
+    DF --&gt; Clean[Cleaning]
+    Clean --&gt; EDA[EDA]
+    EDA --&gt; FE[Feature Engineering]
+    FE --&gt; Viz[Visualization / Stats]
+    FE --&gt; ML[Machine Learning\nChapter 08]
+</code></pre>
+<h2 id="52-pandas-numpy">5.2 Pandas &amp; NumPy</h2>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+df = pd.read_sql(&quot;SELECT * FROM vw_monthly_category_revenue&quot;, conn)
+df.head()
+df.info()
+df.describe()
+</code></pre>
+<p>NumPy underlies Pandas — you'll use it directly for vectorized math and handling <code>NaN</code>:</p>
+<pre><code class="language-python">df['revenue_log'] = np.log1p(df['revenue'])
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+Analysts at companies like <strong>Rappi</strong> or <strong>Amazon</strong> rarely load raw multi-million-row tables into Pandas — they aggregate in SQL first (see <a href="04_SQL.md#47-performance-indexes--optimization">04.7</a>), then bring a few thousand summarized rows into Python for the analysis SQL can't express.</p>
+</blockquote>
+<h2 id="53-cleaning">5.3 Cleaning</h2>
+<pre><code class="language-python">df = df.drop_duplicates()
+df['email'] = df['email'].str.strip().str.lower()
+df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+df['revenue'] = df['revenue'].fillna(0)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+Silently dropping rows with <code>dropna()</code> without checking <em>how much</em> data you're losing or <em>why</em> it's missing. Always check <code>df.isna().sum()</code> first and understand whether missingness is random or meaningful (e.g., "revenue is null" might mean "order was cancelled," not "data error").</p>
+</blockquote>
+<h2 id="54-exploratory-data-analysis-eda">5.4 Exploratory Data Analysis (EDA)</h2>
+<pre><code class="language-python">df['category'].value_counts()
+df.groupby('category')['revenue'].agg(['sum', 'mean', 'count'])
+df.corr(numeric_only=True)
+</code></pre>
+<p>EDA answers: what does this data actually look like, are there outliers, are there surprises, does anything contradict what stakeholders assume?</p>
+<h2 id="55-feature-engineering">5.5 Feature Engineering</h2>
+<pre><code class="language-python">df['order_month'] = df['order_date'].dt.to_period('M')
+df['is_weekend'] = df['order_date'].dt.dayofweek &gt;= 5
+df['revenue_per_unit'] = df['revenue'] / df['quantity']
+</code></pre>
+<p>Feature engineering is where domain knowledge from the business becomes a column a model or a chart can use directly — the bridge into <a href="08_Machine_Learning.md">Chapter 08 (Machine Learning)</a>.</p>
+<h2 id="56-visualization-statistics">5.6 Visualization &amp; Statistics</h2>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.lineplot(data=df, x='order_month', y='revenue', hue='category')
+plt.title('Monthly Revenue by Category')
+plt.show()
+</code></pre>
+<p>Pair every chart with the statistic that backs it up — a mean without a sense of spread (std dev, IQR) can mislead a stakeholder.</p>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Always ask "compared to what?" A number alone ("revenue was $2M last month") means nothing without a comparison — month-over-month, year-over-year, or against a target.</p>
+</blockquote>
+<h2 id="57-project-organization-logging-virtual-environments">5.7 Project organization, logging, virtual environments</h2>
+<pre><code>project/
+├── data/
+├── notebooks/
+├── src/
+│   ├── clean.py
+│   ├── features.py
+│   └── analysis.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+</code></pre>
+<pre><code class="language-bash">python -m venv .venv
+source .venv/bin/activate      # or .venv\Scripts\activate on Windows
+pip install pandas numpy matplotlib seaborn
+pip freeze &gt; requirements.txt
+</code></pre>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info(f&quot;Loaded {len(df)} rows after cleaning&quot;)
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+A <strong>virtual environment</strong> per project + a committed <code>requirements.txt</code> is what separates a "script that ran on my machine once" from a project a teammate can actually reproduce. This is exactly the habit you'll lean on for the <a href="../projects/">10 portfolio projects</a>.</p>
+</blockquote>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Let SQL aggregate; let Python clean, explore, engineer features, and visualize.</li>
+<li>Always quantify missingness before dropping data, and always compare numbers to something.</li>
+<li>Structure every project with <code>venv</code> + <code>requirements.txt</code> + logging from day one — it's a five-minute habit that makes your work reproducible.</li>
+</ul>
+<p>Exercises live in <a href="../exercises/05_Python/"><code>../exercises/05_Python/</code></a>.</p>
+<p><strong>Next:</strong> <a href="06_Power_BI.md">06. Power BI →</a> — turning this analysis into a dashboard stakeholders actually use.</p></section><section id="chapter-06"><h1 id="06-power-bi">06 · Power BI</h1>
+<p><em>Part 6 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="05_Python.md">05. Python</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Build a real dashboard from zero: load and model data, write DAX measures, and publish something a Product Manager or exec would actually trust.</p>
+</blockquote>
+<hr />
+<h2 id="61-power-query">6.1 Power Query</h2>
+<p>Power Query is Power BI's data-loading and shaping layer (Get Data → Transform). Think of it as a GUI front-end for many of the cleaning steps you did in <a href="05_Python.md#53-cleaning">Chapter 05</a>, except here they compile into a reusable, refreshable pipeline.</p>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Do heavy transformation upstream (SQL/dbt in the warehouse) and keep Power Query for light shaping — renaming, type-casting, simple filters. A model that leans on the warehouse for logic is easier to debug and much faster to refresh.</p>
+</blockquote>
+<h2 id="62-data-modeling-relationships">6.2 Data Modeling &amp; Relationships</h2>
+<p>Power BI wants your data modeled the same way you learned in <a href="03_Databases.md#33-star-schema-vs-snowflake-schema">Chapter 03</a>: a <strong>Star Schema</strong> with one fact table and several dimension tables, connected by one-to-many relationships.</p>
+<pre><code class="language-mermaid">erDiagram
+    FACT_SALES }o--|| DIM_DATE : &quot;&quot;
+    FACT_SALES }o--|| DIM_PRODUCT : &quot;&quot;
+    FACT_SALES }o--|| DIM_CUSTOMER : &quot;&quot;
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+Importing flat, wide, pre-joined tables from a spreadsheet instead of a proper star schema. It works for a tiny dataset, then breaks down fast — duplicated dimension rows, wrong aggregations, and DAX that's needlessly complicated. Model it right from the start.</p>
+</blockquote>
+<h2 id="63-dax-measures-kpis">6.3 DAX, Measures, KPIs</h2>
+<p><strong>DAX</strong> (Data Analysis Expressions) is Power BI's formula language. The single most important habit: write <strong>Measures</strong>, not <strong>Calculated Columns</strong>, for anything you aggregate.</p>
+<pre><code class="language-dax">Total Revenue = SUM(fact_sales[revenue])
+
+Revenue MoM % =
+VAR CurrentMonth = [Total Revenue]
+VAR PreviousMonth =
+    CALCULATE([Total Revenue], DATEADD(dim_date[full_date], -1, MONTH))
+RETURN
+    DIVIDE(CurrentMonth - PreviousMonth, PreviousMonth)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Calculated Column</th>
+<th>Measure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Computed</td>
+<td>Row by row, stored in the model</td>
+<td>On the fly, based on filter context</td>
+</tr>
+<tr>
+<td>Use for</td>
+<td>Static per-row attributes (e.g., <code>Full Name</code>)</td>
+<td>KPIs, aggregations, anything that changes with filters</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Increases model size</td>
+<td>Computed at query time — no storage cost</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Business case:</strong> An exec filters the dashboard to "Region = LatAm, Q2." A well-written <strong>Measure</strong> for <code>Total Revenue</code> automatically recalculates for that filter context — a calculated column would not.</p>
+</blockquote>
+<h2 id="64-dashboards-bookmarks-drill-through">6.4 Dashboards, Bookmarks, Drill Through</h2>
+<ul>
+<li><strong>Dashboard/report design:</strong> lead with the KPI, support with trend, allow drill-down — don't bury the answer under five charts of context.</li>
+<li><strong>Bookmarks:</strong> save a specific filter/view state, used to build guided "buttons" that switch report views.</li>
+<li><strong>Drill Through:</strong> let a user right-click a data point (e.g., a region) and jump to a detail page filtered to just that region.</li>
+</ul>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Design for the "5-second read": someone glancing at your dashboard mid-meeting should get the headline number and its direction (up/down vs. target) without hunting.</p>
+</blockquote>
+<h2 id="65-deployment-publishing-best-practices">6.5 Deployment, Publishing, Best Practices</h2>
+<pre><code class="language-mermaid">flowchart LR
+    PBIX[Power BI Desktop\n.pbix file] --&gt;|Publish| Service[Power BI Service]
+    Service --&gt;|Scheduled Refresh| DW[(Data Warehouse)]
+    Service --&gt;|Share / Embed| Stakeholders[Stakeholders]
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practices checklist</strong>
+- Set up <strong>scheduled refresh</strong> so the dashboard is never showing stale data.
+- Use <strong>Row-Level Security (RLS)</strong> if different regions/teams should only see their own data.
+- Document your measures (Power BI supports descriptions) so the next analyst doesn't reverse-engineer your DAX.
+- Version your <code>.pbix</code> files and keep a changelog for major dashboard redesigns, same discipline as <a href="../CHANGELOG.md"><code>../CHANGELOG.md</code></a> for this handbook.</p>
+</blockquote>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Power Query shapes data lightly; heavy transformation belongs upstream in SQL.</li>
+<li>Model in a Star Schema — it's the same discipline from Chapter 03, now inside Power BI.</li>
+<li>Write <strong>Measures</strong>, not Calculated Columns, for KPIs — they respect filter context.</li>
+<li>Publish with scheduled refresh, RLS where needed, and documentation, so the dashboard survives without you in the room.</li>
+</ul>
+<p>Exercises live in <a href="../exercises/06_Power_BI/"><code>../exercises/06_Power_BI/</code></a>.</p>
+<p><strong>Next:</strong> <a href="07_Professional_Projects.md">07. Professional Projects →</a> — combining SQL, Python, and Power BI into a complete, presentable project.</p></section><section id="chapter-07"><h1 id="07-professional-projects">07 · Professional Projects</h1>
+<p><em>Part 7 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="06_Power_BI.md">06. Power BI</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Scope, structure, and deliver a project the way it actually happens inside a company — not a Kaggle notebook, but a business problem taken from question to executive summary.</p>
+</blockquote>
+<hr />
+<h2 id="71-the-methodology">7.1 The methodology</h2>
+<p>Every project in <a href="../projects/"><code>../projects/</code></a> follows the same seven-step arc — this is also, not coincidentally, how real analyst work gets scoped at a company:</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[1. Business Problem] --&gt; B[2. Data &amp; Schema]
+    B --&gt; C[3. Questions to Answer]
+    C --&gt; D[4. SQL]
+    D --&gt; E[5. Python]
+    E --&gt; F[6. Power BI]
+    F --&gt; G[7. Executive Summary]
+</code></pre>
+<ol>
+<li><strong>Business Problem</strong> — one paragraph, written like a stakeholder actually asked it ("Why is churn rising in the Northeast?"), not like a dataset description.</li>
+<li><strong>Database Diagram</strong> — the schema you're working with, drawn like <a href="03_Databases.md">Chapter 03</a>.</li>
+<li><strong>Questions to Answer</strong> — 4–6 concrete questions the business problem breaks down into.</li>
+<li><strong>SQL</strong> — extraction and aggregation per <a href="04_SQL.md">Chapter 04</a>.</li>
+<li><strong>Python</strong> — cleaning, EDA, feature engineering per <a href="05_Python.md">Chapter 05</a>.</li>
+<li><strong>Power BI</strong> — the dashboard stakeholders will actually open, per <a href="06_Power_BI.md">Chapter 06</a>.</li>
+<li><strong>Executive Summary</strong> — one page: what you found, what you recommend, what you'd need to go further.</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Write the Executive Summary <strong>first</strong>, as a hypothesis, before touching data. It forces you to state what a good answer would even look like — then the analysis either confirms it, kills it, or complicates it. That's a much stronger project narrative than "I explored the data and found some things."</p>
+<p>⚠️ <strong>Common mistake</strong>
+Leading a project with the tools ("I used Python and Power BI to analyze retail data") instead of the business problem. Recruiters and hiring managers skim dozens of these — the ones that read like a business case study, not a tools showcase, stand out.</p>
+</blockquote>
+<h2 id="72-project-folder-structure">7.2 Project folder structure</h2>
+<p>Every project in <a href="../projects/"><code>../projects/</code></a> uses this structure:</p>
+<pre><code>projects/&lt;NN_Project_Name&gt;/
+├── README.md        # business problem, objectives, architecture, workflow, conclusions
+├── data/
+├── sql/
+├── python/
+├── powerbi/
+├── diagrams/
+└── presentation/
+</code></pre>
+<h2 id="73-the-10-projects">7.3 The 10 projects</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Project</th>
+<th>Difficulty</th>
+<th>Primary skills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Retail Sales Analytics</td>
+<td>Beginner</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>02</td>
+<td>E-commerce Customer Churn</td>
+<td>Intermediate</td>
+<td>SQL, Python</td>
+</tr>
+<tr>
+<td>03</td>
+<td>Adventure Works BI</td>
+<td>Intermediate</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>04</td>
+<td>Northwind Operations</td>
+<td>Beginner</td>
+<td>SQL</td>
+</tr>
+<tr>
+<td>05</td>
+<td>Credit Card Fraud Detection</td>
+<td>Advanced</td>
+<td>Python, ML</td>
+</tr>
+<tr>
+<td>06</td>
+<td>HR Attrition Analytics</td>
+<td>Intermediate</td>
+<td>SQL, Python, Power BI</td>
+</tr>
+<tr>
+<td>07</td>
+<td>Marketing Campaign Performance</td>
+<td>Intermediate</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>08</td>
+<td>Financial Forecasting</td>
+<td>Advanced</td>
+<td>Python, Time Series</td>
+</tr>
+<tr>
+<td>09</td>
+<td>Product Recommendation Engine</td>
+<td>Advanced</td>
+<td>Python, ML</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Capstone End-to-End Pipeline</td>
+<td>Advanced</td>
+<td>SQL, Python, Power BI, ML</td>
+</tr>
+</tbody>
+</table>
+<p>Each project's own <code>README.md</code> (in its folder under <a href="../projects/"><code>../projects/</code></a>) follows the 7-step structure from §7.1 in full.</p>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>A real project starts with a business problem stated the way a stakeholder would ask it, not a dataset description.</li>
+<li>Structure: Business Problem → Schema → Questions → SQL → Python → Power BI → Executive Summary.</li>
+<li>Write the Executive Summary as a hypothesis first — it sharpens the whole analysis.</li>
+<li>The 10 projects in <a href="../projects/"><code>../projects/</code></a> apply this methodology end to end, increasing in difficulty.</li>
+</ul>
+<p><strong>Next:</strong> <a href="08_Machine_Learning.md">08. Machine Learning →</a> — for the projects (05, 08, 09, 10) that go beyond SQL/BI into predictive modeling.</p></section><section id="chapter-08"><h1 id="08-machine-learning">08 · Machine Learning</h1>
+<p><em>Part 8 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="07_Professional_Projects.md">07. Professional Projects</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Frame a business problem as a modeling problem, build a proper evaluation pipeline, and understand what it takes to get a model into production — the Data Analyst → Data Scientist bridge from <a href="01_Introduction.md#14-career-paths">01.4</a>.</p>
+</blockquote>
+<hr />
+<h2 id="81-the-problem-types">8.1 The problem types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Predicts</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Regression</strong></td>
+<td>A continuous number</td>
+<td>Forecast next month's revenue</td>
+</tr>
+<tr>
+<td><strong>Classification</strong></td>
+<td>A category</td>
+<td>Will this customer churn? (yes/no)</td>
+</tr>
+<tr>
+<td><strong>Clustering</strong></td>
+<td>Ungrouped structure</td>
+<td>Segment customers by behavior, no labels given</td>
+</tr>
+<tr>
+<td><strong>Recommendation</strong></td>
+<td>Ranked relevance</td>
+<td>"Customers who bought X also bought Y"</td>
+</tr>
+<tr>
+<td><strong>Time Series</strong></td>
+<td>Future values over time</td>
+<td>Daily demand forecasting</td>
+</tr>
+<tr>
+<td><strong>NLP</strong></td>
+<td>Structure/meaning from text</td>
+<td>Classify support tickets by topic, sentiment of reviews</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+A <strong>Credit Card Fraud Detection</strong> system (see <a href="../projects/05_Credit_Card_Fraud_Detection/">Project 05</a>) is a classification problem with extreme class imbalance — fraud is maybe 0.1% of transactions. Framing this correctly (and choosing the right metric) matters more than which algorithm you pick.</p>
+</blockquote>
+<h2 id="82-feature-engineering-recap-modeling-lens">8.2 Feature Engineering (recap + modeling lens)</h2>
+<p>Everything from <a href="05_Python.md#55-feature-engineering">05.5</a> applies — now with a modeling goal: does this feature actually help the model separate classes / predict the number, or is it noise the model will overfit to?</p>
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+preprocess = ColumnTransformer([
+    ('num', StandardScaler(), ['revenue_per_unit', 'order_count']),
+    ('cat', OneHotEncoder(handle_unknown='ignore'), ['category', 'region']),
+])
+</code></pre>
+<h2 id="83-pipelines-cross-validation">8.3 Pipelines &amp; Cross-Validation</h2>
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+
+pipe = Pipeline([
+    ('preprocess', preprocess),
+    ('model', RandomForestClassifier(random_state=42)),
+])
+
+scores = cross_val_score(pipe, X_train, y_train, cv=5, scoring='f1')
+pipe.fit(X_train, y_train)
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Always wrap preprocessing + model in a single <code>Pipeline</code>, and always cross-validate. A model that looks great on one train/test split and terrible on another isn't ready — this is the #1 way junior projects overstate results.</p>
+</blockquote>
+<h2 id="84-model-evaluation">8.4 Model Evaluation</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RMSE / MAE</strong></td>
+<td>Regression — average error magnitude</td>
+</tr>
+<tr>
+<td><strong>Accuracy</strong></td>
+<td>Classification, only when classes are balanced</td>
+</tr>
+<tr>
+<td><strong>Precision / Recall / F1</strong></td>
+<td>Classification with imbalance (fraud, churn)</td>
+</tr>
+<tr>
+<td><strong>ROC-AUC</strong></td>
+<td>Ranking how well the model separates classes across thresholds</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+Reporting 99% accuracy on a fraud model where fraud is 0.1% of the data — a model that predicts "not fraud" for everything gets 99.9% accuracy while being completely useless. This is exactly why <strong>Precision/Recall</strong> exist.</p>
+</blockquote>
+<h2 id="85-hyperparameter-optimization">8.5 Hyperparameter Optimization</h2>
+<pre><code class="language-python">from sklearn.model_selection import GridSearchCV
+
+param_grid = {'model__n_estimators': [100, 300], 'model__max_depth': [5, 10, None]}
+grid = GridSearchCV(pipe, param_grid, cv=5, scoring='f1')
+grid.fit(X_train, y_train)
+print(grid.best_params_)
+</code></pre>
+<h2 id="86-deployment-the-ml-engineer-handoff">8.6 Deployment (the ML Engineer handoff)</h2>
+<pre><code class="language-mermaid">flowchart LR
+    NB[Notebook: trained model] --&gt; Serialize[Serialize\n.pkl / MLflow]
+    Serialize --&gt; API[Wrap in API\nFastAPI / Flask]
+    API --&gt; Prod[Production service]
+    Prod --&gt; Monitor[Monitor: drift, latency, accuracy]
+    Monitor --&gt;|triggers| Retrain[Retraining pipeline]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Real company example</strong>
+A Data Scientist's churn model doesn't create business value sitting in a notebook. An <strong>ML Engineer</strong> wraps it behind an API, the product calls it when deciding who gets a retention offer, and the model is monitored for <strong>drift</strong> — when live data starts looking different from training data, accuracy silently degrades. This is the role boundary from <a href="01_Introduction.md#12-the-six-roles-and-how-they-actually-differ">01.2</a>.</p>
+</blockquote>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Correctly frame the business problem as regression / classification / clustering / recsys / time series / NLP before picking an algorithm.</li>
+<li>Always use a <code>Pipeline</code> + cross-validation — never trust a single train/test split.</li>
+<li>Match the metric to the problem: imbalanced classification needs Precision/Recall/F1, not accuracy.</li>
+<li>Deployment is a distinct discipline (ML Engineering) — training a good model is necessary but not sufficient.</li>
+</ul>
+<p>Exercises live in <a href="../exercises/08_Machine_Learning/"><code>../exercises/08_Machine_Learning/</code></a>. Applied end-to-end in <a href="../projects/">Projects 05, 08, 09, 10</a>.</p>
+<p><strong>Next:</strong> <a href="09_Portfolio_Career.md">09. Portfolio &amp; Career →</a> — turning everything you've built into a job.</p></section><section id="chapter-09"><h1 id="09-portfolio-career">09 · Portfolio &amp; Career</h1>
+<p><em>Part 9 of <a href="00_Table_of_Contents.md">The Complete Data Analyst &amp; Data Science Roadmap</a> · Previous: <a href="08_Machine_Learning.md">08. Machine Learning</a></em></p>
+<blockquote>
+<p>💡 <strong>What you'll be able to do after this chapter</strong>
+Package everything from Chapters 1–8 into a portfolio and job search that actually converts — Git hygiene, a resume that reads like impact instead of tasks, interview prep, and a freelancing on-ramp if you want one.</p>
+</blockquote>
+<hr />
+<h2 id="91-git-github">9.1 Git &amp; GitHub</h2>
+<pre><code class="language-bash">git init
+git add .
+git commit -m &quot;Add customer churn analysis: SQL extraction + Python EDA&quot;
+git remote add origin &lt;your-repo-url&gt;
+git push -u origin main
+</code></pre>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Commit in meaningful chunks with messages that describe <em>why</em>, not "update file" — a hiring manager skimming your commit history is silently evaluating how you'll work on their team. This is the same discipline this handbook's own <a href="../CHANGELOG.md"><code>CHANGELOG.md</code></a> models.</p>
+</blockquote>
+<h2 id="92-readme-project-structure">9.2 README &amp; Project Structure</h2>
+<p>Every project (<a href="07_Professional_Projects.md">Chapter 07</a>) needs a README that a recruiter can read in 60 seconds and understand: <strong>What was the business problem, what did you do, what did you find.</strong> Lead with a screenshot of the dashboard or a key chart — not a wall of text.</p>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+A GitHub profile with 15 tutorial-following repos ("Titanic Notebook #1") and zero finished, narrated projects. Three complete projects with a real business framing (per <a href="07_Professional_Projects.md">Chapter 07</a>) beat fifteen unfinished ones, every time.</p>
+</blockquote>
+<h2 id="93-linkedin-resume">9.3 LinkedIn &amp; Resume</h2>
+<p><strong>Resume bullet formula:</strong> <code>[Action] + [what you analyzed/built] + [quantified business impact]</code></p>
+<table>
+<thead>
+<tr>
+<th>Weak</th>
+<th>Strong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Used SQL and Python to analyze sales data"</td>
+<td>"Identified a $180k/year revenue leak in a discount-stacking bug using SQL cohort analysis; recommendation adopted by Finance"</td>
+</tr>
+<tr>
+<td>"Built Power BI dashboards"</td>
+<td>"Built an executive Power BI dashboard adopted by 3 regional teams, replacing 6 hours/week of manual reporting"</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Best practice</strong>
+Every bullet should survive the question "so what?" If it doesn't end in an outcome a business person cares about, rewrite it.</p>
+</blockquote>
+<h2 id="94-interview-questions">9.4 Interview Questions</h2>
+<p><strong>SQL round</strong> (see also <a href="04_SQL.md">Chapter 04</a>):
+- Write a query to find the second-highest salary per department.
+- Explain the difference between <code>WHERE</code> and <code>HAVING</code>.
+- Given two tables, write a query to find customers with no orders.</p>
+<p><strong>Python round</strong> (see also <a href="05_Python.md">Chapter 05</a>):
+- Given a messy DataFrame, walk through your cleaning approach out loud.
+- Explain <code>.groupby()</code> vs. a pivot table — when would you use each?</p>
+<p><strong>Case study / business round:</strong>
+- "Weekly active users dropped 10% last week — walk me through how you'd investigate."
+- Practice structuring your answer: clarify the metric definition → check for data issues → segment (by platform, geography, cohort) → form and test a hypothesis → recommend next steps.</p>
+<p><strong>ML round</strong> (see also <a href="08_Machine_Learning.md">Chapter 08</a>):
+- Precision vs. Recall — when do you optimize for one over the other?
+- How do you know if a model is overfitting?</p>
+<p>Track your own applications and questions in the <a href="../notion/08_Interview_Tracker.md">Notion Interview Tracker</a>.</p>
+<h2 id="95-freelancing-fiverr-upwork">9.5 Freelancing (Fiverr, Upwork)</h2>
+<p>Freelance data work is a legitimate way to build portfolio <em>and</em> income while job-hunting:</p>
+<ul>
+<li>Start with small, well-scoped gigs: "clean and analyze this dataset," "build me a 3-page Power BI dashboard."</li>
+<li>Price by the deliverable, not the hour, once you have 2-3 reviews.</li>
+<li>Every freelance project is a portfolio project — apply the <a href="07_Professional_Projects.md">Chapter 07</a> structure to it too.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Common mistake</strong>
+Underpricing to win the first gig, then staying underpriced forever. Price low for your first 2-3 reviews only, then raise rates — reviews are the asset you're actually buying at that stage.</p>
+</blockquote>
+<h2 id="96-learning-timelines">9.6 Learning Timelines</h2>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Pace</th>
+<th>Rough chapter pacing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>6 months</strong> (intensive, ~25-30 hrs/wk)</td>
+<td>Ch.01–03: 2 wks · SQL: 4 wks · Python: 5 wks · Power BI: 3 wks · Projects: 6 wks · ML: 4 wks · Portfolio/Job search: ongoing from month 4</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>12 months</strong> (balanced, ~12-15 hrs/wk)</td>
+<td>Same order, roughly double the time per phase, with 2 projects running in parallel with each new skill</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>18 months</strong> (part-time, ~6-8 hrs/wk)</td>
+<td>Same order, one topic at a time, minimum 1 project shipped per quarter</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Weekly/daily schedule templates are in the <a href="../notion/04_Learning_Calendar.md">Notion Learning Calendar</a>.</p>
+<h2 id="97-senior-engineer-advice">9.7 Senior Engineer Advice</h2>
+<blockquote>
+<p>🏢 <strong>From the trenches</strong>
+- "The best analysts I've hired weren't the best at SQL — they were the best at asking 'is this the right question?' before writing any query."
+- "Your first six months on the job, over-communicate assumptions. A wrong number nobody questioned is worse than a slow number everyone trusts."
+- "Don't wait for permission to be curious about a metric that looks off. That instinct is the actual job."</p>
+</blockquote>
+<hr />
+<h2 id="chapter-summary">Chapter Summary</h2>
+<ul>
+<li>Git/GitHub hygiene and a README that leads with business impact are part of the deliverable, not an afterthought.</li>
+<li>Resume bullets should survive "so what?" — quantify business impact, not just tools used.</li>
+<li>Prepare for four interview lanes: SQL, Python, business case, and (if relevant) ML.</li>
+<li>Freelancing is a legitimate parallel path — treat every gig like a portfolio project.</li>
+<li>Pick a timeline (6/12/18 months) that matches your real available hours, not your ambition.</li>
+</ul>
+<p><strong>This completes the core handbook.</strong> Return to the <a href="00_Table_of_Contents.md">Table of Contents</a> · Continue to the <a href="../projects/">10 portfolio projects</a> to apply everything.</p></section></body></html>

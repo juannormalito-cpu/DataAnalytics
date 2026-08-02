@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fintech_fraud_intelligence — Auditoría de un Pipeline de Datos y ML</title>
+<style>
+/* ============ TOKENS ============ */
+:root {
+    --navy: #0B1220;
+    --navy-soft: #141E33;
+    --paper: #F5F6F2;
+    --paper-soft: #ECEEE8;
+    --ink: #1C2430;
+    --ink-soft: #5B6470;
+    --line: #D8DCD3;
+    --brass: #B9863A;
+    --brass-soft: #E4CFA4;
+    --risk: #C43B4E;
+    --risk-soft: #F3D9DC;
+    --safe: #2F8F63;
+    --safe-soft: #D6EBDD;
+    --surface: #FFFFFF;
+    --radius: 3px;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+:root[data-theme="dark"] {
+    --navy: #0B1220; --navy-soft: #141E33; --paper: #0B1220; --paper-soft: #101A2C;
+    --ink: #E7E9E4; --ink-soft: #93A0AE; --line: #223049; --surface: #101A2C;
+    --brass-soft: #3A2E17; --risk-soft: #3A1620; --safe-soft: #12301F;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --navy: #0B1220; --navy-soft: #141E33; --paper: #0B1220; --paper-soft: #101A2C;
+        --ink: #E7E9E4; --ink-soft: #93A0AE; --line: #223049; --surface: #101A2C;
+        --brass-soft: #3A2E17; --risk-soft: #3A1620; --safe-soft: #12301F;
+    }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--brass-soft); color: var(--navy); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+h1, h2, h3 { font-family: var(--serif); text-wrap: balance; color: var(--ink); font-weight: 400; margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* ============ LAYOUT SHELL ============ */
+.shell { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+.rail {
+    position: sticky; top: 0; height: 100vh; padding: 32px 20px;
+    border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 28px;
+}
+.rail .brand { font-family: var(--serif); font-size: 15px; line-height: 1.3; }
+.rail .brand .stamp {
+    display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--brass); border: 1px solid var(--brass);
+    padding: 2px 6px; border-radius: var(--radius); margin-bottom: 10px;
+}
+.rail nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.rail nav a {
+    text-decoration: none; color: var(--ink-soft); font-size: 12.5px; padding: 7px 8px;
+    border-radius: var(--radius); font-family: var(--mono); letter-spacing: 0.2px;
+    transition: background 0.15s, color 0.15s;
+}
+.rail nav a:hover, .rail nav a.active { background: var(--paper-soft); color: var(--ink); }
+.rail nav a .idx { color: var(--brass); margin-right: 6px; }
+.rail .meta { font-size: 11px; color: var(--ink-soft); font-family: var(--mono); }
+.rail .meta a { color: var(--brass); text-decoration: none; }
+
+.main { max-width: 900px; margin: 0 auto; padding: 0 48px 120px; }
+section { padding-top: 84px; scroll-margin-top: 20px; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ============ HERO ============ */
+.hero { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; padding-top: 40px; position: relative; }
+.scanline {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brass), transparent);
+    animation: sweep 2.4s ease-in-out 1;
+    opacity: 0.9;
+}
+@keyframes sweep { from { top: 0; opacity: 0; } 15% { opacity: 1; } to { top: 100%; opacity: 0; } }
+.hero .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--brass); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+}
+.hero .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--safe); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.hero h1 { font-size: 44px; line-height: 1.12; max-width: 720px; letter-spacing: -0.01em; }
+.hero h1 em { font-style: normal; color: var(--brass); }
+.hero .sub { font-size: 16px; color: var(--ink-soft); max-width: 560px; margin-top: 20px; }
+.hero .ticker {
+    display: flex; gap: 0; margin-top: 44px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.hero .ticker .cell { flex: 1; padding: 16px 20px 16px 0; border-right: 1px solid var(--line); }
+.hero .ticker .cell:last-child { border-right: none; padding-right: 0; }
+.hero .ticker .n { font-family: var(--mono); font-size: 26px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.hero .ticker .l { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 4px; }
+
+/* ============ SECTION HEADERS ============ */
+.section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+.section-head .idx { font-family: var(--mono); color: var(--brass); font-size: 13px; }
+.section-head h2 { font-size: 26px; }
+.section-lede { color: var(--ink-soft); max-width: 62ch; margin: 10px 0 34px; }
+
+/* ============ STAMP / BADGE ============ */
+.stamp-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 8px; border-radius: var(--radius);
+    border: 1px solid currentColor;
+}
+.stamp-badge.safe { color: var(--safe); background: var(--safe-soft); }
+.stamp-badge.risk { color: var(--risk); background: var(--risk-soft); }
+.stamp-badge.brass { color: var(--brass); background: var(--brass-soft); }
+
+/* ============ PIPELINE ============ */
+.pipeline {
+    display: grid; grid-template-columns: repeat(5, 1fr); margin: 20px 0 8px;
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+}
+.stage {
+    padding: 18px 16px; cursor: default; position: relative;
+    border-right: 1px solid var(--line); border-top: 2px solid transparent;
+    transition: background 0.18s ease, border-top-color 0.18s ease;
+}
+.stage:last-child { border-right: none; }
+.stage:hover { background: var(--paper-soft); border-top-color: var(--brass); }
+.stage .n { font-family: var(--mono); font-size: 10px; color: var(--brass); }
+.stage h4 { font-family: var(--serif); font-size: 15px; margin: 6px 0 4px; font-weight: 700; }
+.stage p { font-size: 11.5px; color: var(--ink-soft); margin: 0; }
+@media (max-width: 860px) {
+    .pipeline { grid-template-columns: 1fr; }
+    .stage { border-right: none; border-bottom: 1px solid var(--line); }
+    .stage:last-child { border-bottom: none; }
+}
+
+/* ============ CARDS / GRID ============ */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+.card h4 { font-family: var(--serif); font-size: 16px; margin-bottom: 8px; }
+.card p { font-size: 13px; color: var(--ink-soft); margin: 0; }
+
+/* ============ STAT ROW ============ */
+.stat-row { display: flex; gap: 0; margin: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.stat { flex: 1; min-width: 120px; padding: 14px 18px 14px 0; border-right: 1px solid var(--line); }
+.stat:last-child { border-right: none; }
+.stat .n { font-family: var(--mono); font-size: 22px; color: var(--ink); }
+.stat .n.risk { color: var(--risk); } .stat .n.safe { color: var(--safe); }
+.stat .l { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+
+/* ============ TABLE ============ */
+.table-wrap { overflow-x: auto; margin: 18px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+th { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--ink-soft); font-weight: 400; }
+td.num, th.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr:hover td { background: var(--paper-soft); }
+
+/* ============ FIGURE ============ */
+.figure { margin: 22px 0; }
+.figure .frame {
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    background: #F1F2ED; padding: 14px; position: relative;
+}
+.figure .frame::before {
+    content: "EXHIBIT"; position: absolute; top: 10px; right: 12px; font-family: var(--mono);
+    font-size: 9px; letter-spacing: 1.5px; color: #A8ADA0;
+}
+.figure img { display: block; width: 100%; height: auto; border-radius: 2px; }
+.figure .cap { font-size: 12px; color: var(--ink-soft); margin-top: 8px; font-family: var(--mono); }
+
+/* ============ TERMINAL ============ */
+.terminal {
+    background: var(--navy); color: #D7E4E8; border-radius: var(--radius); padding: 18px 20px;
+    font-family: var(--mono); font-size: 12.5px; overflow-x: auto; margin: 20px 0;
+}
+.terminal .prompt { color: var(--brass-soft, #E4CFA4); }
+.terminal .comment { color: #6B7A87; }
+.terminal .out { color: #7FD8A4; }
+
+/* ============ CALLOUT ============ */
+.callout { border-left: 3px solid var(--brass); background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--brass); border-radius: var(--radius); padding: 16px 20px; margin: 20px 0; }
+.callout.risk { border-left-color: var(--risk); }
+.callout .label { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brass); display: block; margin-bottom: 6px; }
+.callout.risk .label { color: var(--risk); }
+.callout p { margin: 4px 0 0; font-size: 13.5px; }
+
+/* ============ FOOTER ============ */
+footer { border-top: 1px solid var(--line); margin-top: 100px; padding: 32px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+footer .stack { display: flex; gap: 8px; flex-wrap: wrap; }
+footer .stack span { font-family: var(--mono); font-size: 10.5px; padding: 3px 8px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink-soft); }
+footer .credit { font-size: 12px; color: var(--ink-soft); }
+
+/* ============ THEME TOGGLE ============ */
+.theme-toggle {
+    position: fixed; top: 20px; right: 24px; z-index: 50; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 6px 10px; font-family: var(--mono); font-size: 11px; cursor: pointer; color: var(--ink-soft);
+}
+
+@media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { position: static; height: auto; flex-direction: row; align-items: center; overflow-x: auto; }
+    .rail nav { flex-direction: row; }
+    .main { padding: 0 24px 80px; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+}
+.dgm-wrap { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; background: var(--surface); margin: 20px 0; }
+.dgm .t, .dgm .th, .dgm .ts { font-family: var(--mono); }
+.dgm .c-eng rect { fill: var(--brass-soft); stroke: var(--brass); }
+.dgm .c-eng .th { fill: var(--brass); }
+.dgm .c-dec rect { fill: var(--risk-soft); stroke: var(--risk); }
+.dgm .c-dec .th { fill: var(--risk); }
+.dgm .c-neu rect { fill: var(--paper-soft); stroke: var(--line); }
+.dgm .arr { stroke: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+<aside class="rail">
+    <div class="brand">
+        <span class="stamp">Ledger 01</span><br>
+        fintech_fraud<br>_intelligence
+    </div>
+    <nav id="railnav">
+        <a href="#pipeline"><span class="idx">01</span>Pipeline</a>
+        <a href="#modelo"><span class="idx">02</span>Datos</a>
+        <a href="#analisis"><span class="idx">03</span>Análisis</a>
+        <a href="#ml"><span class="idx">04</span>Machine Learning</a>
+        <a href="#hallazgo"><span class="idx">05</span>El Hallazgo</a>
+        <a href="#produccion"><span class="idx">06</span>Producción</a>
+        <a href="#streaming"><span class="idx">07</span>Streaming en Vivo</a>
+        <a href="#empresa"><span class="idx">08</span>A Escala</a>
+    </nav>
+    <div class="meta">
+        Dataset: PaySim<br>
+        <a href="https://www.kaggle.com/datasets/ealaxi/paysim1" target="_blank" rel="noopener">Kaggle ↗</a>
+    </div>
+</aside>
+
+<main class="main">
+
+<section class="hero">
+    <div class="scanline"></div>
+    <div class="eyebrow"><span class="dot"></span>Sistema de detección activo</div>
+    <h1>Auditoría de un pipeline de datos, de un CSV crudo a un modelo de fraude <em>en producción</em>.</h1>
+    <p class="sub">Un proyecto de portfolio de punta a punta: ingeniería de datos, SQL, Python, Power BI y Machine Learning, aplicados a 1 millón de transacciones de un servicio de pagos móviles.</p>
+    <div class="ticker">
+        <div class="cell"><div class="n num">1,008,213</div><div class="l">Transacciones analizadas</div></div>
+        <div class="cell"><div class="n num">8,213</div><div class="l">Casos de fraude conservados</div></div>
+        <div class="cell"><div class="n num">99.97%</div><div class="l">ROC-AUC del modelo</div></div>
+        <div class="cell"><div class="n num">0.98</div><div class="l">Precision en producción</div></div>
+    </div>
+</section>
+
+<section id="pipeline">
+    <div class="section-head reveal"><span class="idx num">01</span><h2>El pipeline</h2></div>
+    <p class="section-lede reveal">Cinco etapas, cada una con una decisión de diseño real detrás — no un tutorial, un proyecto con los problemas (y arreglos) que aparecen con datos de verdad.</p>
+
+    <div class="pipeline reveal">
+        <div class="stage"><span class="n">01 · EXTRACT</span><h4>CSV crudo</h4><p>493 MB, 6.36M transacciones simuladas de dinero móvil.</p></div>
+        <div class="stage"><span class="n">02 · SAMPLE</span><h4>Muestreo</h4><p>100% del fraude conservado + 1M no-fraude, para caber en el presupuesto de almacenamiento.</p></div>
+        <div class="stage"><span class="n">03 · MODEL</span><h4>Star Schema</h4><p>fact_transactions + dim_time + dim_type. Sin dim_account.</p></div>
+        <div class="stage"><span class="n">04 · TRANSFORM</span><h4>dbt (SQL versionado)</h4><p>17 tests automáticos — <code class="num">unique</code>, <code class="num">not_null</code>, <code class="num">relationships</code>. Reemplaza la transformación en Pandas.</p></div>
+        <div class="stage"><span class="n">05 · SERVE</span><h4>SQL · BI · ML</h4><p>Una misma base alimenta análisis, dashboard y modelo.</p></div>
+    </div>
+
+    <div class="callout reveal">
+        <span class="label">Decisión de diseño real</span>
+        <p>El plan inicial incluía una tabla <code class="num">dim_account</code>. Se descartó: en este dataset, cada cuenta aparece en una sola transacción — una dimensión que no es más chica que los hechos deja de tener sentido como dimensión.</p>
+    </div>
+
+    <div class="callout reveal">
+        <span class="label">ETL → ELT</span>
+        <p>Python ya no transforma — solo extrae y muestrea. La transformación completa vive en <code class="num">dbt/models/</code>, versionada en Git y testeada en cada corrida. La orquestación completa (extract → load → dbt run → dbt test) corre con <strong>Prefect</strong>, con reintentos automáticos por paso — sin Docker, como proceso Python nativo.</p>
+    </div>
+
+    <div class="dgm-wrap reveal">__DIAGRAM_OVERVIEW__</div>
+</section>
+
+<section id="modelo">
+    <div class="section-head reveal"><span class="idx num">02</span><h2>Modelado de datos</h2></div>
+    <p class="section-lede reveal">Un Star Schema deliberadamente simple: una tabla de hechos, dos dimensiones. La simplicidad es la decisión correcta cuando los datos no la contradicen.</p>
+
+    <div class="grid2 reveal">
+        <div class="card">
+            <h4>fact_transactions</h4>
+            <p>1,008,213 filas · monto, balances antes/después, tipo, indicador de fraude, e indicador de inconsistencia de balance calculado en la transformación.</p>
+        </div>
+        <div class="card">
+            <h4>dim_time · dim_type</h4>
+            <p>743 pasos horarios (~30 días simulados) y 5 tipos de transacción (CASH_IN, CASH_OUT, DEBIT, PAYMENT, TRANSFER).</p>
+        </div>
+    </div>
+</section>
+
+<section id="analisis">
+    <div class="section-head reveal"><span class="idx num">03</span><h2>Análisis SQL</h2></div>
+    <p class="section-lede reveal">Antes de cualquier modelo, cinco queries respondieron la pregunta central: ¿dónde vive el fraude?</p>
+
+    <div class="table-wrap reveal">
+    <table>
+        <tr><th>Tipo de transacción</th><th class="num">Transacciones</th><th class="num">Fraude</th><th class="num">Tasa</th></tr>
+        <tr><td>TRANSFER</td><td class="num">87,181</td><td class="num">4,097</td><td class="num" style="color:var(--risk)">4.70%</td></tr>
+        <tr><td>CASH_OUT</td><td class="num">355,156</td><td class="num">4,116</td><td class="num" style="color:var(--risk)">1.16%</td></tr>
+        <tr><td>CASH_IN / PAYMENT / DEBIT</td><td class="num">565,876</td><td class="num">0</td><td class="num" style="color:var(--safe)">0.00%</td></tr>
+    </table>
+    </div>
+
+    <div class="figure reveal">
+        <div class="frame"><img src="__IMG_TENDENCIA__" alt="Tendencia diaria de monto total y monto en fraude"></div>
+        <div class="cap">// monto total movido por día — 30 días simulados</div>
+    </div>
+</section>
+
+<section id="ml">
+    <div class="section-head reveal"><span class="idx num">04</span><h2>Machine Learning</h2></div>
+    <p class="section-lede reveal">Random Forest con class_weight balanceado, validado con cross-validation de 5 folds y evaluado sobre un test set nunca visto.</p>
+
+    <div class="stat-row reveal">
+        <div class="stat"><div class="n num">0.9906</div><div class="l">F1 (validación cruzada)</div></div>
+        <div class="stat"><div class="n num safe">0.982</div><div class="l">Precision (fraude)</div></div>
+        <div class="stat"><div class="n num safe">0.998</div><div class="l">Recall (fraude)</div></div>
+        <div class="stat"><div class="n num">4 / 30</div><div class="l">Falsos negativos / positivos</div></div>
+    </div>
+
+    <div class="grid2 reveal">
+        <div class="figure">
+            <div class="frame"><img src="__IMG_CURVAS__" alt="Curvas Precision-Recall y ROC"></div>
+            <div class="cap">// precision-recall & roc, test set</div>
+        </div>
+        <div class="figure">
+            <div class="frame"><img src="__IMG_IMPORTANCIA__" alt="Importancia de features"></div>
+            <div class="cap">// qué mira el modelo para decidir</div>
+        </div>
+    </div>
+</section>
+
+<section id="hallazgo">
+    <div class="section-head reveal"><span class="idx num">05</span><h2>El hallazgo</h2></div>
+    <p class="section-lede reveal">Un ROC-AUC de 0.9997 es sospechoso. En vez de celebrarlo, se investigó — y la investigación cambió la lectura de todo el proyecto.</p>
+
+    <div class="figure reveal">
+        <div class="frame"><img src="__IMG_SHAP__" alt="SHAP summary plot"></div>
+        <div class="cap">// shap: qué empuja cada predicción hacia fraude o no-fraude</div>
+    </div>
+
+    <div class="callout risk reveal">
+        <span class="label">Leakage parcial confirmado</span>
+        <p>Reentrenando sin <code class="num">origin_balance_delta</code> y <code class="num">balance_mismatch</code>, el ROC-AUC casi no cambia (<span class="num">0.9997 → 0.9992</span>) — pero el F1 se derrumba (<span class="num">0.99 → 0.56</span>). El modelo no estaba "roto" sin esas features, pero el número que más se muestra en un resumen ejecutivo estaba inflado por un patrón sintético del dataset. Documentado en detalle en el manual completo.</p>
+    </div>
+
+    <div class="figure reveal">
+        <div class="frame"><img src="__IMG_ALGORITMOS__" alt="Random Forest vs Logistic Regression"></div>
+        <div class="cap">// random forest vs. logistic regression — mismo dato, mismo split</div>
+    </div>
+</section>
+
+<section id="produccion">
+    <div class="section-head reveal"><span class="idx num">06</span><h2>De archivo a servicio</h2></div>
+    <p class="section-lede reveal">El modelo entrenado se sirve como una API real con FastAPI — el paso concreto hacia algo que una aplicación podría llamar en producción.</p>
+
+    <div class="terminal reveal">
+<span class="comment"># scorear una transacción sospechosa</span><br>
+<span class="prompt">$</span> curl -X POST localhost:8000/score -d '{"amount": 181, "type": "TRANSFER", ...}'<br>
+<span class="out">{"fraud_probability": 0.9999856, "is_fraud_prediction": true}</span>
+    </div>
+
+    <div class="grid3 reveal">
+        <div class="card"><h4>SHAP</h4><p>Explica cada predicción caso por caso, no solo en general.</p></div>
+        <div class="card"><h4>Batch Scoring</h4><p>1M transacciones scoreadas y escritas de vuelta a Postgres para Power BI.</p></div>
+        <div class="card"><h4>API</h4><p>Endpoint HTTP con FastAPI, documentación interactiva en /docs.</p></div>
+    </div>
+</section>
+
+<section id="streaming">
+    <div class="section-head reveal"><span class="idx num">07</span><h2>Streaming simulado — el modelo en vivo</h2></div>
+    <p class="section-lede reveal">Sin Kafka ni infraestructura de streaming real: <code class="num">simulate_stream.py</code> reproduce transacciones ya cargadas como si llegaran una por una, llamando a la API en vivo — la forma más honesta de sentir el modelo "en producción".</p>
+
+    <div class="stat-row reveal">
+        <div class="stat"><div class="n num safe">30 / 30</div><div class="l">Aciertos en la corrida en vivo</div></div>
+        <div class="stat"><div class="n num">100%</div><div class="l">Precisión de la simulación</div></div>
+        <div class="stat"><div class="n num">0.63</div><div class="l">Probabilidad más baja en un TRUE POSITIVE</div></div>
+    </div>
+
+    <div class="terminal reveal">
+<span class="comment"># python -m src.interfaces.simulate_stream --n 30 --delay 0.5</span><br>
+<span class="out">[  1] CASH_IN    monto=$  351,295.78  real=normal   modelo=normal  (p=0.0000)  OK</span><br>
+<span class="out">[  2] CASH_OUT   monto=$  288,148.22  real=FRAUDE   modelo=FRAUDE  (p=0.9966)  OK</span><br>
+<span class="out">[  4] CASH_OUT   monto=$1,385,945.61  real=FRAUDE   modelo=FRAUDE  (p=1.0000)  OK</span><br>
+<span class="out">[ 13] TRANSFER   monto=$10,000,000.00  real=FRAUDE   modelo=FRAUDE  (p=1.0000)  OK</span><br>
+<span class="out">[ 26] TRANSFER   monto=$  399,045.08  real=FRAUDE   modelo=FRAUDE  (p=0.6333)  OK</span><br>
+<span class="comment">... (30 eventos en total)</span><br>
+<span class="out">Aciertos: 30/30 (100.0%)</span>
+    </div>
+
+    <div class="callout reveal">
+        <span class="label">El caso interesante: #26</span>
+        <p>De los 30 eventos, el caso #26 tuvo <code class="num">p=0.6333</code> — muy por debajo del resto de los fraudes detectados (todos entre 0.99 y 1.0). Es el único caso "dudoso" de toda la corrida, exactamente lo que anticipaba la curva de calibración: el modelo casi no tiene zona gris, así que cuando aparece un caso ahí, es señal de prestarle atención especial.</p>
+    </div>
+</section>
+
+<section id="empresa">
+    <div class="section-head reveal"><span class="idx num">08</span><h2>Esto, a escala</h2></div>
+    <p class="section-lede reveal">Todo este proyecto se armó en una sesión de trabajo. El manual completo documenta cómo el mismo alcance, en una empresa grande, se reparte entre 7 equipos y toma 3 a 4 meses — con revisión de Riesgo, aprobación regulatoria, y despliegue gradual incluidos.</p>
+
+    <p class="section-lede reveal" style="margin-top:28px;">Ninguna de estas piezas corre en la laptop de nadie en producción — cada una tiene su lugar autónomo.</p>
+    <div class="dgm-wrap reveal">__DIAGRAM_LOCAL__</div>
+
+    <div class="callout reveal">
+        <span class="label">Documentación completa</span>
+        <p>El manual práctico (19 secciones, con cada gráfico y hallazgo de este proyecto) está disponible junto al código fuente.</p>
+    </div>
+</section>
+
+<footer>
+    <div class="stack">
+        <span>SQL</span><span>Python</span><span>Postgres</span><span>dbt</span><span>Prefect</span><span>Power BI</span><span>scikit-learn</span><span>SHAP</span><span>FastAPI</span>
+    </div>
+    <div class="credit">fintech_fraud_intelligence · dataset PaySim</div>
+</footer>
+
+</main>
+</div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">◐ tema</button>
+
+<script>
+// Scroll-reveal
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+revealEls.forEach(el => io.observe(el));
+
+// Rail active state on scroll
+const sections = document.querySelectorAll('main section[id]');
+const links = document.querySelectorAll('#railnav a');
+const navIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        const link = document.querySelector(`#railnav a[href="#${e.target.id}"]`);
+        if (!link) return;
+        if (e.isIntersecting) { links.forEach(l => l.classList.remove('active')); link.classList.add('active'); }
+    });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => navIo.observe(s));
+
+// Theme toggle
+const root = document.documentElement;
+const toggle = document.getElementById('themeToggle');
+toggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+});
+</script>
+
+</body>
+</html>

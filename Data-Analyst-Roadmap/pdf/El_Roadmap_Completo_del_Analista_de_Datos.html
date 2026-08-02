@@ -1,0 +1,1712 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>El Roadmap Completo del Analista de Datos y Data Science</title>
+<style>
+@page {
+    size: A4;
+    margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+    @top-center { content: "El Roadmap Completo del Analista de Datos y Data Science"; font-size: 8pt; color: #888; }
+    @bottom-center { content: "Página " counter(page) " de " counter(pages); font-size: 8pt; color: #888; }
+}
+@page cover { @top-center { content: ""; } @bottom-center { content: ""; } }
+body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; color: #1a1a1a; line-height: 1.55; font-size: 10.5pt; }
+h1 { font-size: 22pt; color: #0b5fff; border-bottom: 3px solid #0b5fff; padding-bottom: 6px; page-break-before: always; }
+h2 { font-size: 15pt; color: #111; margin-top: 1.4em; }
+h3 { font-size: 12.5pt; color: #333; }
+code { background: #f2f4f8; padding: 1px 4px; border-radius: 3px; font-family: 'Cascadia Code', Consolas, monospace; font-size: 9pt; }
+pre { background: #0b1021; color: #e6e6e6; padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-size: 8.5pt; }
+pre code { background: none; color: inherit; }
+blockquote { border-left: 4px solid #0b5fff; background: #f5f8ff; margin: 1em 0; padding: 0.6em 1em; border-radius: 0 4px 4px 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 9.5pt; }
+th, td { border: 1px solid #ddd; padding: 5px 8px; text-align: left; }
+th { background: #f2f4f8; }
+a { color: #0b5fff; text-decoration: none; }
+.cover { page: cover; page-break-after: always; text-align: center; padding-top: 30%; }
+.cover h1 { border: none; font-size: 30pt; page-break-before: avoid; }
+.cover p { font-size: 12pt; color: #555; }
+.toc { page-break-after: always; }
+.toc a { display: block; margin: 4px 0; }
+.mermaid, pre.mermaid { background: #f9f9fb; border: 1px dashed #ccc; padding: 8px; font-size: 8pt; }
+</style></head>
+<body>
+    <div class="cover">
+        <h1>El Roadmap Completo del Analista de Datos y Data Science</h1>
+        <p>Un handbook premium, de nivel empresarial, desde principiante/intermedio<br>hasta Data Analyst profesional — con proyección hacia Data Science.</p>
+        <p style="margin-top:3em;">Compilado el 2026-07-31</p>
+    </div>
+    <div class="toc"><h1>Tabla de Contenidos</h1><a href="#chapter-01">01 · Introducción</a><a href="#chapter-02">02 · Cómo Trabajan las Empresas</a><a href="#chapter-03">03 · Bases de Datos</a><a href="#chapter-04">04 · SQL — El Curso Completo</a><a href="#chapter-05">05 · Python</a><a href="#chapter-06">06 · Power BI</a><a href="#chapter-07">07 · Proyectos Profesionales</a><a href="#chapter-08">08 · Machine Learning</a><a href="#chapter-09">09 · Portfolio y Carrera</a></div><section id="chapter-01"><h1 id="01-introduccion">01 · Introducción</h1>
+<p><em>Parte 1 de El Roadmap Completo del Analista de Datos y Data Science · Siguiente: <a href="02_Como_Trabajan_las_Empresas.md">02. Cómo Trabajan las Empresas</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Explicar, en una entrevista o a alguien no técnico, exactamente qué hace diferente un Data Analyst de un Data Scientist, un Data Engineer y un Analytics Engineer — y elegir cuál de esos caminos de carrera perseguir, con una idea realista de habilidades, salario y trabajo diario.</p>
+</blockquote>
+<hr />
+<h2 id="11-que-es-el-dato">1.1 ¿Qué es el dato?</h2>
+<p>Olvidate de la definición de manual por un segundo. Adentro de una empresa, <strong>el dato es un escape</strong>. Cada acción que hace un usuario, cada sistema que corre, cada transacción que se cierra — deja un rastro. Un click, un pago, un escaneo de entrega, un ticket de soporte, una lectura de sensor.</p>
+<p>Nadie se propone "recolectar datos". El dato es un <em>subproducto</em> de que el negocio esté funcionando. Tu trabajo, en cada rol que cubre este handbook, es tomar ese subproducto y convertirlo en algo sobre lo que la empresa pueda actuar.</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[Usuario hace algo] --&gt; B[La app registra un evento]
+    B --&gt; C[El evento llega a una base de datos]
+    C --&gt; D[&quot;Alguien hace una pregunta\n('¿por qué bajaron los registros?')&quot;]
+    D --&gt; E[Vos convertís registros crudos en una respuesta]
+    E --&gt; F[El negocio toma una decisión]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+En <strong>Spotify</strong>, reproducir una canción, saltarla a los 4 segundos, o agregarla a una playlist son todos eventos. Ninguno se generó "para analytics" — es simplemente lo que hace la app cuando la usás. El trabajo del equipo de Data empieza recién <em>después</em> de que ese evento ya existe.</p>
+</blockquote>
+<p>El dato solo no vale nada. Se vuelve valioso en el momento en que alguien lo convierte en una decisión — esa transformación, de evento crudo a decisión, es lo que enseña todo este handbook, capa por capa:</p>
+<pre><code>Usuarios → Aplicaciones → Base de Datos Operacional → ETL/ELT → Data Warehouse
+      → SQL → Python → Power BI → Decisión de Negocio → Machine Learning → Deployment
+</code></pre>
+<p>Vas a ver este mismo pipeline de nuevo en el <a href="02_Como_Trabajan_las_Empresas.md">Capítulo 02</a>, donde cada flecha tiene su propio análisis en profundidad.</p>
+<hr />
+<h2 id="12-los-seis-roles-y-como-se-diferencian-realmente">1.2 Los seis roles, y cómo se diferencian realmente</h2>
+<p>Los títulos de puesto en el mundo del dato son inconsistentes entre empresas — un "Data Analyst" en una empresa hace lo que un "Data Scientist" hace en otra. Pero el <em>trabajo en sí</em> se agrupa en seis trabajos reconocibles. Así se distinguen por lo que realmente hacen en su día a día, no por su título.</p>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Pregunta central que responde</th>
+<th>Herramientas principales</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BI Analyst</strong></td>
+<td>"¿Qué pasó, y cómo lo hago visible para todos?"</td>
+<td>SQL, Power BI / Tableau</td>
+<td>Dashboards, reportes recurrentes</td>
+</tr>
+<tr>
+<td><strong>Data Analyst</strong></td>
+<td>"¿Por qué pasó, y qué deberíamos hacer?"</td>
+<td>SQL, Excel, Python, Power BI</td>
+<td>Análisis ad-hoc, insights, presentaciones</td>
+</tr>
+<tr>
+<td><strong>Data Scientist</strong></td>
+<td>"¿Qué va a pasar, y qué tan seguros estamos?"</td>
+<td>Python, estadística, ML</td>
+<td>Modelos, experimentos, predicciones</td>
+</tr>
+<tr>
+<td><strong>Data Engineer</strong></td>
+<td>"¿Cómo movemos y almacenamos datos de forma confiable a escala?"</td>
+<td>SQL, Python, Spark, Airflow, cloud</td>
+<td>Pipelines, warehouses</td>
+</tr>
+<tr>
+<td><strong>Analytics Engineer</strong></td>
+<td>"¿Cómo hacemos modelos de datos limpios y confiables que todos puedan consultar?"</td>
+<td>SQL, dbt, herramientas de warehouse</td>
+<td>Modelos de datos, capa de transformación</td>
+</tr>
+<tr>
+<td><strong>ML Engineer</strong></td>
+<td>"¿Cómo logramos que un modelo funcione de forma confiable en producción?"</td>
+<td>Python, APIs, Docker, cloud, MLOps</td>
+<td>Modelos desplegados y monitoreados</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Recuadro — la forma más rápida de distinguir dos roles</strong>
+Preguntate: <em>"¿Qué entregan, y a quién?"</em>
+- Un <strong>BI Analyst</strong> le entrega un dashboard a un ejecutivo.
+- Un <strong>Data Analyst</strong> le entrega un insight a quien toma la decisión.
+- Un <strong>Data Scientist</strong> le entrega un modelo o una hipótesis testeada a un Data Analyst o a un equipo de producto.
+- Un <strong>Data Engineer</strong> le entrega tablas limpias y confiables a todos los de arriba.
+- Un <strong>Analytics Engineer</strong> le entrega modelos de datos <em>confiables y documentados</em> (no tablas crudas) a Analysts y Scientists.
+- Un <strong>ML Engineer</strong> le entrega un servicio corriendo y monitoreado al producto mismo.</p>
+</blockquote>
+<h3 id="como-se-ve-esto-dentro-de-una-empresa-real">Cómo se ve esto dentro de una empresa real</h3>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Ingenieria[Ingeniería]
+        DE[Data Engineer\nconstruye pipelines y warehouse]
+        AE[Analytics Engineer\nmodela el warehouse en\ntablas limpias y reutilizables]
+    end
+    subgraph Analisis[Análisis]
+        BI[BI Analyst\ndashboards y reportes]
+        DA[Data Analyst\ninvestigación e insight ad-hoc]
+    end
+    subgraph Ciencia[Ciencia]
+        DS[Data Scientist\nmodelado y experimentación]
+        MLE[ML Engineer\nllevar modelos a producción]
+    end
+    DE --&gt; AE --&gt; BI
+    AE --&gt; DA
+    AE --&gt; DS
+    DS --&gt; MLE
+    BI --&gt; Biz[Decisión de Negocio]
+    DA --&gt; Biz
+    MLE --&gt; Prod[Feature en Vivo del Producto]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+En <strong>Mercado Libre</strong>, cuando un Product Manager pregunta "¿por qué sube el abandono de carrito en Brasil?", un <strong>Data Analyst</strong> lo responde con SQL y una presentación en días. Si la respuesta se convierte en "deberíamos construir un modelo que prediga quién está por abandonar su carrito," eso se vuelve un proyecto de <strong>Data Scientist</strong> — y si sale a producción como un disparador de descuento en vivo en la app, un <strong>ML Engineer</strong> lo pone en producción y lo mantiene funcionando.</p>
+</blockquote>
+<hr />
+<h2 id="13-responsabilidades-diarias-rol-por-rol">1.3 Responsabilidades diarias, rol por rol</h2>
+<h3 id="bi-analyst">BI Analyst</h3>
+<ul>
+<li>Mantener y extender dashboards recurrentes (revenue, retención, métricas operativas)</li>
+<li>Ser dueño de las definiciones de métricas para que "revenue" signifique lo mismo para todos</li>
+<li>Atender tickets de "el dashboard se ve mal"</li>
+<li>Presentar revisiones de negocio semanales/mensuales</li>
+</ul>
+<h3 id="data-analyst">Data Analyst</h3>
+<ul>
+<li>Que lo metan en un hilo de Slack con una pregunta vaga ("¿estamos perdiendo plata con esta promo?") y convertirla en un análisis acotado</li>
+<li>Escribir SQL contra el warehouse, verificar los números, visualizarlos</li>
+<li>Presentar hallazgos con una recomendación clara, no solo un gráfico</li>
+<li>Trabajar directamente con stakeholders de Producto/Marketing/Finanzas</li>
+</ul>
+<h3 id="data-scientist">Data Scientist</h3>
+<ul>
+<li>Enmarcar un problema de negocio como un problema de modelado (clasificación, regresión, ranking, etc.)</li>
+<li>Explorar datos, crear features, entrenar y validar modelos</li>
+<li>Diseñar y leer resultados de tests A/B</li>
+<li>Comunicar incertidumbre y trade-offs a stakeholders no técnicos</li>
+</ul>
+<h3 id="data-engineer">Data Engineer</h3>
+<ul>
+<li>Construir y mantener pipelines de ETL/ELT</li>
+<li>Diseñar esquemas de warehouse para confiabilidad y performance de queries</li>
+<li>Ser dueño de chequeos de calidad de datos, alertas y SLAs de pipelines</li>
+<li>Gestionar infraestructura cloud y sus costos</li>
+</ul>
+<h3 id="analytics-engineer">Analytics Engineer</h3>
+<ul>
+<li>Escribir y testear lógica de transformación (comúnmente en dbt) sobre datos crudos del warehouse</li>
+<li>Documentar tablas y columnas para que el analytics self-serve realmente funcione</li>
+<li>Ser dueño de la capa de "única fuente de verdad" entre el dato crudo y todos los que consultan</li>
+<li>Ser puente entre Data Engineering y Análisis</li>
+</ul>
+<h3 id="ml-engineer">ML Engineer</h3>
+<ul>
+<li>Tomar el notebook de un Data Scientist y convertirlo en un servicio confiable</li>
+<li>Construir pipelines de entrenamiento/inferencia, APIs, monitoreo y triggers de reentrenamiento</li>
+<li>Gestionar versionado de modelos y rollback</li>
+<li>Ser dueño de latencia, costo y uptime del ML en producción</li>
+</ul>
+<hr />
+<h2 id="14-caminos-de-carrera">1.4 Caminos de carrera</h2>
+<p>Ninguno de estos roles es un callejón sin salida — son un grafo, no una escalera. El punto de entrada más común para la audiencia de este handbook es <strong>Data Analyst</strong>, y los dos caminos dominantes desde ahí son:</p>
+<pre><code class="language-mermaid">flowchart LR
+    Start([Data Analyst Junior]) --&gt; DA[Data Analyst]
+    DA --&gt; SDA[Data Analyst Senior]
+    SDA --&gt; AE[Analytics Engineer]
+    SDA --&gt; DS[Data Scientist]
+    AE --&gt; DEng[Data Engineer]
+    DS --&gt; MLE[ML Engineer]
+    SDA --&gt; LeadA[Analytics Manager]
+    DS --&gt; LeadD[Data Science Manager]
+</code></pre>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+No intentes elegir tu destino final el primer día. Empezá como Data Analyst, volvete fluido en SQL y contexto de negocio, y dejá que el trabajo mismo te diga si disfrutás más el lado de "construir sistemas confiables" (→ Analytics/Data Engineering) o el lado de "modelar incertidumbre" (→ Data Science).</p>
+<p>⚠️ <strong>Error común</strong>
+Saltar directo a tutoriales de Machine Learning sin haber consultado nunca una base de datos de producción real, sucia y sin documentar. Las empresas no contratan ML Engineers que no puedan manejar datos sucios — contratan Analysts que crecieron hacia eso. Los <a href="03_Bases_de_Datos.md">Capítulos 03–05</a> asumen que pasaste por ahí antes exactamente por esta razón.</p>
+</blockquote>
+<hr />
+<h2 id="15-rangos-salariales-referencias-orientativas">1.5 Rangos salariales (referencias orientativas)</h2>
+<p>Los salarios varían enormemente según país, tamaño de empresa y seniority — tratá esto como <strong>orientativo</strong>, no contractual.</p>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>LatAm (remoto, USD/año)</th>
+<th>EE.UU. (presencial/remoto, USD/año)</th>
+<th>UE (presencial/remoto, EUR/año)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BI Analyst</td>
+<td>$18k – $40k</td>
+<td>$65k – $100k</td>
+<td>€35k – €60k</td>
+</tr>
+<tr>
+<td>Data Analyst</td>
+<td>$20k – $45k</td>
+<td>$70k – $110k</td>
+<td>€38k – €65k</td>
+</tr>
+<tr>
+<td>Data Analyst Senior</td>
+<td>$35k – $65k</td>
+<td>$100k – $140k</td>
+<td>€55k – €85k</td>
+</tr>
+<tr>
+<td>Data Scientist</td>
+<td>$30k – $60k</td>
+<td>$110k – $165k</td>
+<td>€55k – €95k</td>
+</tr>
+<tr>
+<td>Data Engineer</td>
+<td>$30k – $65k</td>
+<td>$115k – $170k</td>
+<td>€55k – €95k</td>
+</tr>
+<tr>
+<td>Analytics Engineer</td>
+<td>$30k – $60k</td>
+<td>$110k – $155k</td>
+<td>€55k – €90k</td>
+</tr>
+<tr>
+<td>ML Engineer</td>
+<td>$35k – $75k</td>
+<td>$130k – $190k</td>
+<td>€65k – €110k</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Recuadro</strong>
+La compensación total (equity, bonos) en grandes empresas de tecnología (Google, Amazon, Microsoft, Stripe) puede llevar el extremo superior del rango de EE.UU. entre 30–60% más alto. Los rangos de LatAm de arriba asumen <strong>trabajo remoto para una empresa extranjera</strong> — los salarios solo-mercado-local son típicamente 40–60% más bajos.</p>
+</blockquote>
+<hr />
+<h2 id="16-matriz-de-habilidades-requeridas">1.6 Matriz de habilidades requeridas</h2>
+<table>
+<thead>
+<tr>
+<th>Habilidad</th>
+<th style="text-align: center;">BI Analyst</th>
+<th style="text-align: center;">Data Analyst</th>
+<th style="text-align: center;">Data Scientist</th>
+<th style="text-align: center;">Data Engineer</th>
+<th style="text-align: center;">Analytics Engineer</th>
+<th style="text-align: center;">ML Engineer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+</tr>
+<tr>
+<td>Excel / Planillas</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+</tr>
+<tr>
+<td>Python</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Estadística</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+</tr>
+<tr>
+<td>Visualización de datos (Power BI/Tableau)</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">○○○</td>
+</tr>
+<tr>
+<td>Modelado de Datos / Warehousing</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●○○</td>
+</tr>
+<tr>
+<td>Machine Learning</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Ingeniería de Software / APIs</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">○○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+<tr>
+<td>Comunicación de negocio</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●○○</td>
+</tr>
+<tr>
+<td>Plataformas Cloud (AWS/Azure/GCP)</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●○○</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+<td style="text-align: center;">●●○</td>
+<td style="text-align: center;">●●●</td>
+</tr>
+</tbody>
+</table>
+<p><code>●●●</code> central al rol · <code>●●○</code> importante · <code>●○○</code> útil · <code>○○○</code> rara vez necesaria</p>
+<p>Este handbook construye estas habilidades en el orden que realmente necesitan las empresas: <strong>Bases de Datos → SQL → Python → Power BI → Proyectos → Machine Learning → Portfolio</strong>, siguiendo el pipeline del §1.1.</p>
+<hr />
+<h2 id="17-libros-recomendados">1.7 Libros recomendados</h2>
+<table>
+<thead>
+<tr>
+<th>Libro</th>
+<th>Autor</th>
+<th>Mejor para</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>SQL for Data Analysis</em></td>
+<td>Cathy Tanimura</td>
+<td>Fundamentos de SQL con patrones analíticos reales</td>
+</tr>
+<tr>
+<td><em>Storytelling with Data</em></td>
+<td>Cole Nussbaumer Knaflic</td>
+<td>Convertir gráficos en decisiones sobre las que la gente actúa</td>
+</tr>
+<tr>
+<td><em>Python for Data Analysis</em></td>
+<td>Wes McKinney (creador de Pandas)</td>
+<td>La referencia definitiva de Pandas</td>
+</tr>
+<tr>
+<td><em>The Data Warehouse Toolkit</em></td>
+<td>Ralph Kimball</td>
+<td>Star schema, modelado dimensional — fundamental para el Cap. 03</td>
+</tr>
+<tr>
+<td><em>Practical Statistics for Data Scientists</em></td>
+<td>Peter Bruce, Andrew Bruce, Peter Gedeck</td>
+<td>Estadística con mirada de practicante, no de profesor</td>
+</tr>
+<tr>
+<td><em>Designing Data-Intensive Applications</em></td>
+<td>Martin Kleppmann</td>
+<td>Para cuando quieras entender qué construyen realmente los Data Engineers</td>
+</tr>
+<tr>
+<td><em>Hands-On Machine Learning with Scikit-Learn, Keras &amp; TensorFlow</em></td>
+<td>Aurélien Géron</td>
+<td>La referencia práctica estándar de ML</td>
+</tr>
+</tbody>
+</table>
+<h2 id="18-canales-de-youtube-recomendados">1.8 Canales de YouTube recomendados</h2>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Enfoque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Luke Barousse</strong></td>
+<td>Consejos de carrera para Data Analyst, insight real del mercado laboral</td>
+</tr>
+<tr>
+<td><strong>Alex The Analyst</strong></td>
+<td>SQL, Power BI y fundamentos de Data Analyst desde cero</td>
+</tr>
+<tr>
+<td><strong>StatQuest with Josh Starmer</strong></td>
+<td>Conceptos de estadística y ML explicados visualmente, sin relleno</td>
+</tr>
+<tr>
+<td><strong>Seattle Data Guy</strong></td>
+<td>Data Engineering y estrategia de carrera desde un practicante de la industria</td>
+</tr>
+<tr>
+<td><strong>Ken Jee</strong></td>
+<td>Caminos de carrera en Data Science y construcción de portfolio</td>
+</tr>
+<tr>
+<td><strong>Corey Schafer</strong></td>
+<td>Fundamentos de Python profundos y correctos</td>
+</tr>
+<tr>
+<td><strong>Guy in a Cube</strong></td>
+<td>Power BI directo de un ex miembro del equipo de Power BI de Microsoft</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>El dato no tiene valor hasta que se convierte en una decisión — esa transformación es el trabajo, en cada rol de este campo.</li>
+<li>BI Analyst, Data Analyst, Data Scientist, Data Engineer, Analytics Engineer y ML Engineer son seis trabajos distintos que se distinguen por <em>qué entregan y a quién</em>, no solo por el título.</li>
+<li>La mayoría de las personas que entran a este campo deberían empezar como <strong>Data Analyst</strong> y ramificarse hacia Data Science o Analytics/Data Engineering según qué parte del trabajo disfruten.</li>
+<li>Las habilidades se acumulan en un orden específico — este handbook sigue ese orden empezando en el <a href="02_Como_Trabajan_las_Empresas.md">Capítulo 02</a>.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="02_Como_Trabajan_las_Empresas.md">02. Cómo Trabajan las Empresas →</a> — cómo se genera y almacena realmente el dato antes de que alguien lo pueda analizar.</p></section><section id="chapter-02"><h1 id="02-como-trabajan-las-empresas">02 · Cómo Trabajan las Empresas</h1>
+<p><em>Parte 2 · Anterior: <a href="01_Introduccion.md">01. Introducción</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Dibujar y explicar la arquitectura de datos real de una empresa moderna — desde que un usuario toca un botón hasta que un ejecutivo ve un número en un dashboard — y saber cuándo una empresa recurre a un Data Warehouse vs. un Data Lake vs. un Lakehouse, y batch vs. streaming.</p>
+</blockquote>
+<hr />
+<h2 id="21-como-se-genera-el-dato">2.1 Cómo se genera el dato</h2>
+<p>Toda empresa corre sobre <strong>aplicaciones</strong> — la app móvil, el sitio web, el sistema de punto de venta, la herramienta interna de administración. Esas aplicaciones necesitan recordar cosas <em>ahora mismo</em>: si el pago se acreditó, si el ítem sigue en stock, si el usuario está logueado. Esa memoria inmediata y transaccional vive en una <strong>base de datos operacional</strong> (también llamada OLTP — ver <a href="03_Bases_de_Datos.md">Capítulo 03</a>).</p>
+<pre><code class="language-mermaid">flowchart LR
+    U[Usuario] --&gt;|hace click / compra / se registra| App[Aplicación]
+    App --&gt;|lee/escribe filas| DB[(Base de Datos Operacional\nOLTP)]
+    App2[Servicios backend] --&gt;|escribe eventos| DB
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+Cuando agregás un ítem al carrito en <strong>Mercado Libre</strong>, esa escritura va directo a una base de datos operacional optimizada para <em>velocidad y consistencia de una sola transacción</em> — no para responder "¿cuáles fueron nuestras 10 categorías top el mes pasado?". Esa pregunta necesita un sistema completamente distinto, que es de lo que trata el resto de este capítulo.</p>
+</blockquote>
+<hr />
+<h2 id="22-base-de-datos-operacional-data-warehouse">2.2 Base de Datos Operacional → Data Warehouse</h2>
+<p>Las bases de datos operacionales están construidas para manejar miles de transacciones pequeñas y rápidas de lectura/escritura. Son <strong>malas</strong> para responder grandes preguntas analíticas ("revenue total por región, por mes, en los últimos 3 años") porque ese tipo de query escanea enormes cantidades de datos — y correr eso contra la base de datos en vivo ralentizaría la app para usuarios reales.</p>
+<p>Entonces las empresas copian el dato hacia un segundo sistema, construido específicamente para análisis: el <strong>Data Warehouse</strong>.</p>
+<pre><code class="language-mermaid">flowchart LR
+    DB[(Base de Datos Operacional\nOLTP)] --&gt;|ETL / ELT| DW[(Data Warehouse\nOLAP)]
+    DW --&gt; SQL[Análisis SQL]
+    DW --&gt; BI[Power BI / Tableau]
+    DW --&gt; DS[Data Science / ML]
+</code></pre>
+<p>El proceso que mueve y remodela el dato entre estos dos sistemas se llama <strong>ETL</strong> o <strong>ELT</strong>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ETL (Extract, Transform, Load)</th>
+<th>ELT (Extract, Load, Transform)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orden</td>
+<td>Transforma <em>antes</em> de cargar</td>
+<td>Transforma <em>después</em> de cargar</td>
+</tr>
+<tr>
+<td>Dónde ocurre la transformación</td>
+<td>Un motor de procesamiento separado</td>
+<td>Dentro del warehouse mismo</td>
+</tr>
+<tr>
+<td>Común hoy porque</td>
+<td>Los warehouses ahora son lo suficientemente potentes para transformar datos a escala</td>
+<td>Los warehouses en la nube (Snowflake, BigQuery, Redshift) son baratos para correr grandes transformaciones</td>
+</tr>
+<tr>
+<td>Herramientas típicas</td>
+<td>Informatica, SSIS legacy, scripts a medida</td>
+<td>Airbyte/Fivetran (extract+load) + dbt (transform)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Las empresas modernas cloud-first por defecto usan <strong>ELT</strong>: aterrizar el dato crudo en el warehouse primero, y después transformarlo con SQL/dbt donde es fácil de testear, versionar y volver a correr. Esta también es la capa donde viven los <strong>Analytics Engineers</strong> (ver <a href="01_Introduccion.md#12-los-seis-roles-y-cómo-se-diferencian-realmente">01.2</a>).</p>
+<p>⚠️ <strong>Error común</strong>
+Consultar directamente la base de datos operacional (de producción) para analytics. Así es como los analistas junior sin querer ralentizan — o tumban — la app en vivo. Analizá siempre desde el warehouse o una réplica de lectura, nunca desde la base de datos de producción primaria.</p>
+</blockquote>
+<hr />
+<h2 id="23-data-warehouse-vs-data-lake-vs-lakehouse">2.3 Data Warehouse vs. Data Lake vs. Lakehouse</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Data Warehouse</th>
+<th>Data Lake</th>
+<th>Lakehouse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forma del dato</td>
+<td>Estructurado (tablas, filas, columnas)</td>
+<td>Cualquier forma — estructurado, semi-estructurado, archivos crudos, imágenes, logs</td>
+<td>Estructurado + no estructurado, unificado</td>
+</tr>
+<tr>
+<td>Esquema</td>
+<td>Forzado al escribir (schema-on-write)</td>
+<td>Forzado al leer (schema-on-read)</td>
+<td>Ambos, según la capa</td>
+</tr>
+<tr>
+<td>Mejor para</td>
+<td>Dashboards de BI, analytics SQL</td>
+<td>Datos de entrenamiento de ML, logs crudos, exploración de data science</td>
+<td>Todo — una sola plataforma para ambos</td>
+</tr>
+<tr>
+<td>Ejemplos</td>
+<td>Snowflake, BigQuery, Redshift</td>
+<td>S3 + Hive/Glue, Azure Data Lake</td>
+<td>Databricks, Snowflake (Iceberg), BigQuery (unificado)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+Una empresa como <strong>Netflix</strong> vuelca logs crudos de eventos de visualización en un <strong>Data Lake</strong> porque el volumen y la variedad son enormes y no todos los equipos lo necesitan estructurado. El equipo de BI después construye una capa curada y estructurada encima — ya sea un <strong>Data Warehouse</strong> clásico o, cada vez más, un <strong>Lakehouse</strong> que permite que tanto analistas SQL como equipos de ML trabajen sobre el mismo almacenamiento subyacente sin duplicar datos.</p>
+</blockquote>
+<hr />
+<h2 id="24-batch-vs-streaming">2.4 Batch vs. Streaming</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Procesamiento Batch</th>
+<th>Streaming</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>El dato se mueve</td>
+<td>Según un cronograma (cada hora, cada noche)</td>
+<td>Continuamente, a medida que ocurren los eventos</td>
+</tr>
+<tr>
+<td>Latencia</td>
+<td>Minutos a horas</td>
+<td>Milisegundos a segundos</td>
+</tr>
+<tr>
+<td>Herramientas típicas</td>
+<td>Airflow + jobs SQL/dbt, scripts de Python programados</td>
+<td>Kafka, Kinesis, Flink, Spark Streaming</td>
+</tr>
+<tr>
+<td>Caso de uso típico</td>
+<td>Dashboard diario de revenue, reportes mensuales</td>
+<td>Detección de fraude, recomendaciones en tiempo real, inventario en vivo</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 <strong>Recuadro</strong>
+La mayoría del trabajo de <strong>Data Analyst</strong> ocurre sobre datos procesados en <strong>batch</strong> — un dashboard que se refresca cada mañana es completamente normal y esperado. Streaming es más una preocupación de Data/ML Engineering, algo que vas a encontrar pero rara vez vas a construir vos mismo como analista.</p>
+</blockquote>
+<hr />
+<h2 id="25-plataformas-cloud-aws-azure-google-cloud">2.5 Plataformas cloud: AWS, Azure, Google Cloud</h2>
+<p>No necesitás dominar ningún proveedor cloud para empezar como Data Analyst, pero vas a escuchar constantemente estos nombres — sabé para qué son.</p>
+<table>
+<thead>
+<tr>
+<th>Proveedor</th>
+<th>Warehouse</th>
+<th>Almacenamiento (Lake)</th>
+<th>Herramienta de BI</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AWS</strong></td>
+<td>Redshift</td>
+<td>S3</td>
+<td>QuickSight (poco común)</td>
+<td>El cloud más común en general; a menudo combinado con Power BI o Tableau</td>
+</tr>
+<tr>
+<td><strong>Azure</strong></td>
+<td>Synapse Analytics</td>
+<td>Azure Data Lake Storage</td>
+<td><strong>Power BI</strong> (nativo)</td>
+<td>Común en empresas que ya usan el stack de Microsoft</td>
+</tr>
+<tr>
+<td><strong>Google Cloud</strong></td>
+<td><strong>BigQuery</strong></td>
+<td>Cloud Storage</td>
+<td>Looker / Looker Studio</td>
+<td>Popular en empresas tech nativas de alto crecimiento</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Cuando veas un aviso de trabajo que dice "SQL + BigQuery" o "SQL + Snowflake," no te asustes — el SQL que aprendés en el <a href="04_SQL.md">Capítulo 04</a> es 90% transferible. Las diferencias son mayormente sintaxis de dialecto y cómo te conectás, no cómo pensás las queries.</p>
+</blockquote>
+<hr />
+<h2 id="26-el-panorama-completo">2.6 El panorama completo</h2>
+<pre><code class="language-mermaid">flowchart TB
+    U[Usuarios] --&gt; App[Aplicaciones]
+    App --&gt; OLTP[(Base de Datos Operacional\nOLTP)]
+    OLTP --&gt;|ELT| DW[(Data Warehouse)]
+    Lake[(Data Lake\ncrudo/no estructurado)] --&gt; DW
+    DW --&gt; SQLA[SQL]
+    SQLA --&gt; PY[Python]
+    PY --&gt; PBI[Power BI]
+    PBI --&gt; Dec[Decisión de Negocio]
+    PY --&gt; ML[Machine Learning]
+    ML --&gt; Dep[Deployment]
+    Dep --&gt; App
+</code></pre>
+<p>Este es el diagrama que hay que tener en la cabeza para el resto del handbook — cada capítulo restante cae en un nodo de este: <a href="03_Bases_de_Datos.md">Bases de Datos</a> y <a href="04_SQL.md">SQL</a> viven en la capa del warehouse, <a href="05_Python.md">Python</a> y <a href="06_Power_BI.md">Power BI</a> se apoyan encima, y <a href="08_Machine_Learning.md">Machine Learning</a> cierra el loop de vuelta al producto.</p>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Las aplicaciones escriben en <strong>bases de datos operacionales</strong> rápidas y transaccionales — nunca analices directamente contra ellas.</li>
+<li><strong>ETL/ELT</strong> mueve y remodela ese dato hacia un <strong>Data Warehouse</strong> construido para análisis; las empresas modernas favorecen ELT con SQL/dbt.</li>
+<li>Los <strong>Data Lakes</strong> guardan datos crudos/no estructurados a escala; los <strong>Lakehouses</strong> intentan unificar ambos mundos.</li>
+<li>La mayoría del trabajo de analista corre sobre datos <strong>batch</strong>; <strong>streaming</strong> es más una preocupación de Data/ML Engineering.</li>
+<li>AWS, Azure y GCP ofrecen cada uno un warehouse, un lake y (en el caso de Azure) una herramienta de BI nativa — las habilidades de SQL que vas a construir en el Capítulo 04 se transfieren a todos ellos.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="03_Bases_de_Datos.md">03. Bases de Datos →</a> — qué hay realmente dentro de esa caja de warehouse, y cómo está estructurada para que SQL sea rápido.</p></section><section id="chapter-03"><h1 id="03-bases-de-datos">03 · Bases de Datos</h1>
+<p><em>Parte 3 · Anterior: <a href="02_Como_Trabajan_las_Empresas.md">02. Cómo Trabajan las Empresas</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Leer y diseñar un esquema relacional, explicar la normalización, y diseñar un Star Schema — la habilidad que hace que todo en el <a href="04_SQL.md">Capítulo 04 (SQL)</a> encaje.</p>
+</blockquote>
+<hr />
+<h2 id="31-bases-de-datos-relacionales-en-una-imagen">3.1 Bases de datos relacionales, en una imagen</h2>
+<p>Una base de datos relacional guarda el dato en <strong>tablas</strong> (filas × columnas), y las tablas se relacionan entre sí a través de <strong>claves</strong>.</p>
+<pre><code class="language-mermaid">erDiagram
+    CLIENTES ||--o{ PEDIDOS : realiza
+    PEDIDOS ||--|{ ITEMS_PEDIDO : contiene
+    PRODUCTOS ||--o{ ITEMS_PEDIDO : &quot;aparece en&quot;
+
+    CLIENTES {
+        int cliente_id PK
+        string nombre
+        string email
+        date fecha_registro
+    }
+    PEDIDOS {
+        int pedido_id PK
+        int cliente_id FK
+        date fecha_pedido
+        string estado
+    }
+    ITEMS_PEDIDO {
+        int item_id PK
+        int pedido_id FK
+        int producto_id FK
+        int cantidad
+        decimal precio_unitario
+    }
+    PRODUCTOS {
+        int producto_id PK
+        string nombre_producto
+        string categoria
+        decimal precio
+    }
+</code></pre>
+<h3 id="claves-primarias-y-claves-foraneas">Claves Primarias y Claves Foráneas</h3>
+<ul>
+<li><strong>Clave Primaria (PK):</strong> la columna (o conjunto de columnas) que identifica de forma única cada fila de una tabla. <code>cliente_id</code> en <code>CLIENTES</code>.</li>
+<li><strong>Clave Foránea (FK):</strong> una columna en una tabla que apunta a una Clave Primaria en otra, creando una relación. <code>cliente_id</code> en <code>PEDIDOS</code> apunta de vuelta a <code>CLIENTES</code>.</li>
+</ul>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+En cualquier empresa de e-commerce, <code>pedidos.cliente_id</code> es una clave foránea hacia <code>clientes.cliente_id</code>. Así es <em>cómo</em> el sistema sabe qué cliente hizo qué pedido — y es exactamente la relación sobre la que vas a hacer <code>JOIN</code> constantemente en el <a href="04_SQL.md">Capítulo 04</a>.</p>
+</blockquote>
+<h3 id="indices">Índices</h3>
+<p>Un <strong>índice</strong> es una estructura de búsqueda que le permite a la base de datos encontrar filas sin escanear la tabla entera — la misma idea que el índice de un libro te permite saltar directo a una página en vez de leer de tapa a tapa.</p>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Las Claves Primarias se indexan automáticamente. Como analista, la decisión de índices que más te afecta es: las columnas que constantemente filtrás o usás para hacer join (<code>WHERE cliente_id = ...</code>, <code>JOIN ... ON pedido_id</code>) se benefician de un índice. Normalmente no vas a crear índices vos mismo, pero vas a diagnosticar queries lentas preguntándote "¿le falta uno a esto?" — cubierto en <a href="04_SQL.md#47-performance-índices-y-optimización">04.7 Performance y Optimización</a>.</p>
+</blockquote>
+<hr />
+<h2 id="32-normalizacion">3.2 Normalización</h2>
+<p>La <strong>normalización</strong> es el proceso de organizar tablas para eliminar datos duplicados e inconsistencias.</p>
+<table>
+<thead>
+<tr>
+<th>Forma</th>
+<th>Regla</th>
+<th>Soluciona</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1FN</strong></td>
+<td>Cada columna contiene un solo valor (sin listas separadas por comas en una celda)</td>
+<td>Grupos repetidos en un campo</td>
+</tr>
+<tr>
+<td><strong>2FN</strong></td>
+<td>1FN + cada columna no-clave depende de la <em>totalidad</em> de la clave primaria</td>
+<td>Dependencia parcial en claves compuestas</td>
+</tr>
+<tr>
+<td><strong>3FN</strong></td>
+<td>2FN + ninguna columna no-clave depende de otra columna no-clave</td>
+<td>Dependencia transitiva (ej: guardar <code>ciudad</code> y <code>país</code> cuando <code>ciudad</code> ya determina <code>país</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Guardar <code>nombre_cliente</code> en cada fila de la tabla <code>PEDIDOS</code> en vez de solo <code>cliente_id</code>. Ahora, si un cliente cambia su nombre, tenés que actualizarlo en mil lugares — y si te olvidás de uno, tu dato ahora es inconsistente. La normalización existe exactamente para prevenir esto.</p>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+Las bases de datos operacionales (los sistemas OLTP detrás de la app) casi siempre están fuertemente normalizadas — eso mantiene las escrituras rápidas y consistentes. Pero el <em>warehouse</em> a menudo <strong>desnormaliza</strong> intencionalmente partes de esa estructura, porque los analistas valoran la simplicidad de las queries y la velocidad de lectura por encima de la eficiencia de escritura. Ese trade-off es exactamente para lo que sirve un Star Schema.</p>
+</blockquote>
+<hr />
+<h2 id="33-star-schema-vs-snowflake-schema">3.3 Star Schema vs. Snowflake Schema</h2>
+<p>Una vez que el dato llega al warehouse, típicamente se remodela alrededor de tablas de <strong>Hechos (Fact)</strong> y <strong>Dimensiones (Dimension)</strong>.</p>
+<ul>
+<li><strong>Tabla de hechos (Fact table):</strong> el "qué pasó" — una fila por evento/transacción, mayormente números (medidas) y claves foráneas.</li>
+<li><strong>Tabla de dimensión (Dimension table):</strong> el "quién/qué/dónde/cuándo" — atributos descriptivos por los que segmentás y filtrás.</li>
+</ul>
+<pre><code class="language-mermaid">erDiagram
+    FACT_VENTAS ||--o{ DIM_FECHA : &quot;ocurrió en&quot;
+    FACT_VENTAS ||--o{ DIM_CLIENTE : &quot;vendido a&quot;
+    FACT_VENTAS ||--o{ DIM_PRODUCTO : &quot;de producto&quot;
+    FACT_VENTAS ||--o{ DIM_TIENDA : &quot;vendido en&quot;
+
+    FACT_VENTAS {
+        int venta_id PK
+        int fecha_id FK
+        int cliente_id FK
+        int producto_id FK
+        int tienda_id FK
+        decimal revenue
+        int cantidad
+    }
+    DIM_FECHA { int fecha_id PK, date fecha_completa, int anio, int mes, string dia_semana }
+    DIM_CLIENTE { int cliente_id PK, string nombre, string segmento }
+    DIM_PRODUCTO { int producto_id PK, string nombre, string categoria }
+    DIM_TIENDA { int tienda_id PK, string ciudad, string region }
+</code></pre>
+<p>Esto es un <strong>Star Schema</strong>: una tabla de hechos central rodeada directamente por tablas de dimensión planas. Se llama así porque el diagrama parece una estrella.</p>
+<p>Un <strong>Snowflake Schema</strong> lleva esto más lejos normalizando las dimensiones mismas — ej: dividiendo <code>DIM_PRODUCTO</code> en <code>DIM_PRODUCTO</code> → <code>DIM_CATEGORIA</code> → <code>DIM_DEPARTAMENTO</code>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Star Schema</th>
+<th>Snowflake Schema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dimensiones</td>
+<td>Desnormalizadas (planas)</td>
+<td>Normalizadas (divididas en subtablas)</td>
+</tr>
+<tr>
+<td>Complejidad de queries</td>
+<td>Más simple — menos joins</td>
+<td>Requiere más joins</td>
+</tr>
+<tr>
+<td>Velocidad de queries</td>
+<td>Generalmente más rápida</td>
+<td>Puede ser más lenta por los joins extra</td>
+</tr>
+<tr>
+<td>Almacenamiento</td>
+<td>Levemente más redundante</td>
+<td>Más eficiente en almacenamiento</td>
+</tr>
+<tr>
+<td>Cuándo lo eligen las empresas</td>
+<td>Opción por defecto para BI/reportes — favorece la simplicidad del analista</td>
+<td>Dimensiones muy grandes, o necesidades estrictas de gobierno de datos</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Como Data Analyst, esperá por defecto un <strong>Star Schema</strong> en un warehouse bien construido — es lo que los <code>Analytics Engineers</code> optimizan, porque es lo que hace rápido y entendible tanto a Power BI como a SQL. Si te dan un Snowflake Schema, esperá más joins en tus queries del día a día.</p>
+</blockquote>
+<hr />
+<h2 id="34-oltp-vs-olap">3.4 OLTP vs. OLAP</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>OLTP (Online Transaction Processing)</th>
+<th>OLAP (Online Analytical Processing)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Propósito</td>
+<td>Hacer funcionar el negocio, transacción por transacción</td>
+<td>Analizar el negocio, de forma agregada</td>
+</tr>
+<tr>
+<td>Sistema ejemplo</td>
+<td>La base de datos de producción de la app</td>
+<td>El Data Warehouse</td>
+</tr>
+<tr>
+<td>Patrón de query</td>
+<td>Corto, simple, alta frecuencia (<code>INSERT</code>, <code>UPDATE</code> de una fila)</td>
+<td>Largo, complejo, agregando sobre millones de filas</td>
+</tr>
+<tr>
+<td>Esquema</td>
+<td>Normalizado</td>
+<td>Star/Snowflake (parcialmente desnormalizado)</td>
+</tr>
+<tr>
+<td>Quién lo toca</td>
+<td>La aplicación misma</td>
+<td>Analysts, Scientists, herramientas de BI</td>
+</tr>
+</tbody>
+</table>
+<p>Esta es la misma distinción del <a href="02_Como_Trabajan_las_Empresas.md#22-base-de-datos-operacional--data-warehouse">02.2</a> — ahora sabés <em>por qué</em> los dos sistemas tienen formas tan distintas: OLTP está optimizado para <strong>escrituras normalizadas y rápidas</strong>; OLAP está optimizado para <strong>lecturas agregadas y desnormalizadas, rápidas</strong>.</p>
+<hr />
+<h2 id="35-adelanto-de-sql">3.5 Adelanto de SQL</h2>
+<p>No necesitás fluidez completa en SQL todavía (el <a href="04_SQL.md">Capítulo 04</a> es el curso completo), pero así es como el esquema de arriba se convierte en una pregunta real:</p>
+<pre><code class="language-sql">-- &quot;Revenue total por categoría de producto, último trimestre&quot;
+SELECT
+    p.categoria,
+    SUM(f.revenue) AS revenue_total
+FROM fact_ventas f
+JOIN dim_producto p ON f.producto_id = p.producto_id
+JOIN dim_fecha d ON f.fecha_id = d.fecha_id
+WHERE d.fecha_completa &gt;= '2026-04-01' AND d.fecha_completa &lt; '2026-07-01'
+GROUP BY p.categoria
+ORDER BY revenue_total DESC;
+</code></pre>
+<p>Fijate qué directo mapea esto al Star Schema: un <code>JOIN</code> por cada dimensión que necesitás, un <code>GROUP BY</code> por el nivel de detalle que querés. Ese es todo el sentido de diseñarlo así.</p>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Las bases de datos relacionales conectan tablas a través de <strong>Claves Primarias</strong> y <strong>Claves Foráneas</strong>; los <strong>índices</strong> hacen rápidas las búsquedas.</li>
+<li>La <strong>normalización</strong> (1FN–3FN) elimina duplicación e inconsistencia — crítica para sistemas OLTP.</li>
+<li>Los warehouses remodelan el dato en tablas de <strong>Hechos</strong> y <strong>Dimensión</strong>, típicamente como un <strong>Star Schema</strong> (más simple, más rápido) o un <strong>Snowflake Schema</strong> (más normalizado, más joins).</li>
+<li><strong>OLTP</strong> hace funcionar el negocio transacción por transacción; <strong>OLAP</strong> lo analiza de forma agregada — formas distintas para trabajos distintos.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="04_SQL.md">04. SQL →</a> — el curso completo de SQL, construido directamente sobre los conceptos de esquema de este capítulo.</p></section><section id="chapter-04"><h1 id="04-sql-el-curso-completo">04 · SQL — El Curso Completo</h1>
+<p><em>Parte 4 · Anterior: <a href="03_Bases_de_Datos.md">03. Bases de Datos</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Escribir SQL analítico real de punta a punta — filtrando, agregando, uniendo, usando funciones de ventana y optimizando — contra el Star Schema del <a href="03_Bases_de_Datos.md">Capítulo 03</a>. Esta es la habilidad de mayor impacto en todo el handbook.</p>
+</blockquote>
+<p>Todos los ejemplos usan el esquema <code>fact_ventas</code> / <code>dim_producto</code> / <code>dim_cliente</code> / <code>dim_fecha</code> / <code>dim_tienda</code> introducido en <a href="03_Bases_de_Datos.md#33-star-schema-vs-snowflake-schema">03.3</a>.</p>
+<hr />
+<h2 id="41-select-where-order-by">4.1 SELECT, WHERE, ORDER BY</h2>
+<pre><code class="language-sql">SELECT nombre_producto, categoria, precio
+FROM dim_producto
+WHERE categoria = 'Electrónica'
+ORDER BY precio DESC;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> Marketing pide "todos los productos de Electrónica con precio mayor a $50, del más caro al más barato" para planear una promo.</p>
+</blockquote>
+<p><strong>Ejercicio:</strong> Listá todos los clientes que se registraron en 2025, ordenados por fecha de registro.</p>
+<details><summary>Solución</summary>
+
+
+<pre><code class="language-sql">SELECT cliente_id, nombre, fecha_registro
+FROM dim_cliente
+WHERE fecha_registro &gt;= '2025-01-01' AND fecha_registro &lt; '2026-01-01'
+ORDER BY fecha_registro;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="42-group-by-having">4.2 GROUP BY, HAVING</h2>
+<p><code>GROUP BY</code> colapsa filas en grupos; <code>HAVING</code> filtra <em>después</em> de la agregación (<code>WHERE</code> filtra <em>antes</em>).</p>
+<pre><code class="language-sql">SELECT categoria, SUM(revenue) AS revenue_total
+FROM fact_ventas f JOIN dim_producto p ON f.producto_id = p.producto_id
+GROUP BY categoria
+HAVING SUM(revenue) &gt; 100000;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> Finanzas quiere solo las categorías que generaron más de $100k — las categorías chicas son ruido para esta revisión.</p>
+</blockquote>
+<p><strong>Ejercicio:</strong> Encontrá las tiendas con más de 500 pedidos en total.</p>
+<details><summary>Solución</summary>
+
+
+<pre><code class="language-sql">SELECT tienda_id, COUNT(*) AS cantidad_pedidos
+FROM fact_ventas
+GROUP BY tienda_id
+HAVING COUNT(*) &gt; 500;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="43-join-union">4.3 JOIN, UNION</h2>
+<table>
+<thead>
+<tr>
+<th>Tipo de JOIN</th>
+<th>Devuelve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>INNER JOIN</code></td>
+<td>Solo filas que coinciden en ambas tablas</td>
+</tr>
+<tr>
+<td><code>LEFT JOIN</code></td>
+<td>Todas las filas de la tabla izquierda, filas coincidentes de la derecha (NULL si no hay match)</td>
+</tr>
+<tr>
+<td><code>RIGHT JOIN</code></td>
+<td>Espejo de LEFT JOIN</td>
+</tr>
+<tr>
+<td><code>FULL OUTER JOIN</code></td>
+<td>Todas las filas de ambas, coincidentes donde sea posible</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">-- Clientes que todavía no hicieron ningún pedido (uso clásico de LEFT JOIN)
+SELECT c.cliente_id, c.nombre
+FROM dim_cliente c
+LEFT JOIN fact_ventas f ON c.cliente_id = f.cliente_id
+WHERE f.cliente_id IS NULL;
+</code></pre>
+<p><code>UNION</code> apila resultados verticalmente (y elimina duplicados; <code>UNION ALL</code> los mantiene — y es más rápido).</p>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> Growth quiere una lista de "nunca compró" para una campaña de descuento de primera compra — exactamente el patrón <code>LEFT JOIN ... WHERE ... IS NULL</code> de arriba.</p>
+</blockquote>
+<p><strong>Ejercicio:</strong> Combiná una lista de pedidos online y pedidos en tienda física en un solo resultado, manteniendo duplicados.</p>
+<details><summary>Solución</summary>
+
+
+<pre><code class="language-sql">SELECT pedido_id, 'online' AS canal FROM pedidos_online
+UNION ALL
+SELECT pedido_id, 'tienda' AS canal FROM pedidos_tienda;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="44-ctes-y-subconsultas">4.4 CTEs y Subconsultas</h2>
+<p>Un <strong>CTE</strong> (Common Table Expression, <code>WITH</code>) nombra una subconsulta para que puedas construir una query en pasos legibles.</p>
+<pre><code class="language-sql">WITH revenue_mensual AS (
+    SELECT DATE_TRUNC('month', d.fecha_completa) AS mes, SUM(f.revenue) AS revenue
+    FROM fact_ventas f JOIN dim_fecha d ON f.fecha_id = d.fecha_id
+    GROUP BY 1
+)
+SELECT mes, revenue,
+       revenue - LAG(revenue) OVER (ORDER BY mes) AS cambio_mensual
+FROM revenue_mensual
+ORDER BY mes;
+</code></pre>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Preferí CTEs por sobre subconsultas anidadas en profundidad — se leen de arriba hacia abajo como una narrativa, y cualquier analista de tu equipo puede debuggearlas pieza por pieza.</p>
+</blockquote>
+<p><strong>Ejercicio:</strong> Encontrá el cliente que más gastó por región usando un CTE.</p>
+<details><summary>Solución</summary>
+
+
+<pre><code class="language-sql">WITH totales_cliente AS (
+    SELECT c.region, c.cliente_id, SUM(f.revenue) AS total_gastado
+    FROM fact_ventas f JOIN dim_cliente c ON f.cliente_id = c.cliente_id
+    GROUP BY c.region, c.cliente_id
+),
+ranking AS (
+    SELECT *, RANK() OVER (PARTITION BY region ORDER BY total_gastado DESC) AS rnk
+    FROM totales_cliente
+)
+SELECT region, cliente_id, total_gastado
+FROM ranking
+WHERE rnk = 1;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="45-vistas-y-procedimientos-almacenados">4.5 Vistas y Procedimientos Almacenados</h2>
+<ul>
+<li><strong>Vista (View):</strong> una query guardada de la que podés hacer <code>SELECT</code> como si fuera una tabla — genial para ocultar complejidad de otros analistas.</li>
+<li><strong>Procedimiento almacenado (Stored Procedure):</strong> un bloque de SQL (y lógica) guardado y parametrizado al que llamás con <code>CALL</code> — lo usan más los engineers que los analistas, pero deberías reconocer uno cuando lo veas.</li>
+</ul>
+<pre><code class="language-sql">CREATE VIEW vw_revenue_mensual_categoria AS
+SELECT DATE_TRUNC('month', d.fecha_completa) AS mes, p.categoria, SUM(f.revenue) AS revenue
+FROM fact_ventas f
+JOIN dim_fecha d ON f.fecha_id = d.fecha_id
+JOIN dim_producto p ON f.producto_id = p.producto_id
+GROUP BY 1, 2;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> En vez de que cada analista reescriba el mismo join de 3 tablas cada semana para el dashboard ejecutivo, un <strong>Analytics Engineer</strong> lo expone como una vista — esta es exactamente la idea de "única fuente de verdad" del <a href="01_Introduccion.md">01.2</a>.</p>
+</blockquote>
+<hr />
+<h2 id="46-funciones-de-ventana-y-ranking">4.6 Funciones de Ventana y Ranking</h2>
+<p>Las funciones de ventana calculan sobre un conjunto de filas <em>relacionadas con la fila actual</em>, sin colapsarlas como hace <code>GROUP BY</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Función</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROW_NUMBER()</code></td>
+<td>Número secuencial único por fila</td>
+</tr>
+<tr>
+<td><code>RANK()</code> / <code>DENSE_RANK()</code></td>
+<td>Ranking con (<code>RANK</code>) o sin (<code>DENSE_RANK</code>) huecos en empates</td>
+</tr>
+<tr>
+<td><code>LAG()</code> / <code>LEAD()</code></td>
+<td>Valor de una fila anterior/siguiente</td>
+</tr>
+<tr>
+<td><code>SUM()/AVG() OVER (...)</code></td>
+<td>Totales acumulados, promedios móviles</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">SELECT
+    cliente_id, fecha_pedido, revenue,
+    SUM(revenue) OVER (PARTITION BY cliente_id ORDER BY fecha_pedido) AS total_acumulado
+FROM fact_ventas;
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> "Mostrame el gasto acumulado de por vida de cada cliente a lo largo del tiempo" — la pregunta clásica de función de ventana de total acumulado, y una de las preguntas de entrevista de SQL más comunes.</p>
+</blockquote>
+<p><strong>Ejercicio:</strong> Para cada producto, rankeá sus ventas por revenue dentro de su categoría.</p>
+<details><summary>Solución</summary>
+
+
+<pre><code class="language-sql">SELECT
+    p.categoria, p.nombre_producto, f.revenue,
+    DENSE_RANK() OVER (PARTITION BY p.categoria ORDER BY f.revenue DESC) AS rank_en_categoria
+FROM fact_ventas f JOIN dim_producto p ON f.producto_id = p.producto_id;
+</code></pre>
+
+</details>
+
+<hr />
+<h2 id="47-performance-indices-y-optimizacion">4.7 Performance, Índices y Optimización</h2>
+<blockquote>
+<p>⚠️ <strong>Errores comunes</strong>
+- <code>SELECT *</code> en una tabla ancha del warehouse cuando necesitás 3 columnas — lee muchos más datos de los necesarios.
+- Filtrar sobre una función aplicada a una columna (<code>WHERE YEAR(fecha_pedido) = 2026</code>) — esto a menudo impide que la base de datos use un índice. Preferí <code>WHERE fecha_pedido &gt;= '2026-01-01' AND fecha_pedido &lt; '2027-01-01'</code>.
+- Hacer join sobre columnas sin índice en tablas grandes — consultá con tu Data Engineer si un camino de join muy usado está lento.</p>
+<p>✅ <strong>Buenas prácticas</strong>
+- Filtrá lo antes posible (<code>WHERE</code> antes de unir más tablas de las necesarias).
+- Leé el <strong>plan de ejecución</strong> (<code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code>) cuando una query esté inesperadamente lenta — te dice si está escaneando una tabla completa o usando un índice.
+- Agregá al nivel más grueso que realmente necesite la pregunta — no traigas datos fila por fila a Python solo para sumarlos ahí.</p>
+</blockquote>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li><code>SELECT/WHERE/ORDER BY</code> → <code>GROUP BY/HAVING</code> → <code>JOIN</code> son el 80% diario del SQL de un analista.</li>
+<li>Los CTEs hacen legible la lógica de varios pasos; las Vistas exponen esa lógica como bloques reutilizables y confiables.</li>
+<li>Las funciones de ventana resuelven problemas de "comparar esta fila con otras filas" sin colapsar tu conjunto de resultados — rankings, totales acumulados, cambio período a período.</li>
+<li>La performance de queries se trata mayormente de filtrar temprano, evitar funciones sobre columnas filtradas, y leer el plan de ejecución cuando algo está lento.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="05_Python.md">05. Python →</a> — donde el output de SQL se convierte en limpieza, EDA e ingeniería de features.</p></section><section id="chapter-05"><h1 id="05-python">05 · Python</h1>
+<p><em>Parte 5 · Anterior: <a href="04_SQL.md">04. SQL</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Tomar el resultado de una query SQL y hacer todo lo que SQL hace mal: limpieza profunda, análisis exploratorio, ingeniería de features y visualización — organizado como un proyecto profesional, no como un notebook de borrador.</p>
+</blockquote>
+<hr />
+<h2 id="51-donde-encaja-python-y-donde-no">5.1 Dónde encaja Python (y dónde no)</h2>
+<blockquote>
+<p>📌 <strong>Recuadro</strong>
+No traigas millones de filas a Python para hacer lo que SQL ya hace bien (agregación, filtrado, joins). Usá SQL para que el warehouse haga el trabajo pesado, y después traé el <em>resultado</em> a Python para lo que SQL no hace bien: modelado estadístico, lógica de limpieza compleja y visualización rica.</p>
+</blockquote>
+<pre><code class="language-mermaid">flowchart LR
+    DW[(Data Warehouse)] --&gt;|query SQL, agregada| DF[DataFrame de Pandas]
+    DF --&gt; Clean[Limpieza]
+    Clean --&gt; EDA[EDA]
+    EDA --&gt; FE[Ingeniería de Features]
+    FE --&gt; Viz[Visualización / Estadística]
+    FE --&gt; ML[Machine Learning\nCapítulo 08]
+</code></pre>
+<h2 id="52-pandas-y-numpy">5.2 Pandas y NumPy</h2>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+df = pd.read_sql(&quot;SELECT * FROM vw_revenue_mensual_categoria&quot;, conn)
+df.head()
+df.info()
+df.describe()
+</code></pre>
+<p>NumPy es la base de Pandas — lo vas a usar directamente para matemática vectorizada y manejo de <code>NaN</code>:</p>
+<pre><code class="language-python">df['revenue_log'] = np.log1p(df['revenue'])
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+Los analistas en empresas como <strong>Rappi</strong> o <strong>Amazon</strong> rara vez cargan tablas crudas de millones de filas en Pandas — agregan en SQL primero (ver <a href="04_SQL.md#47-performance-índices-y-optimización">04.7</a>), y después traen unas pocas miles de filas resumidas a Python para el análisis que SQL no puede expresar.</p>
+</blockquote>
+<h2 id="53-limpieza">5.3 Limpieza</h2>
+<pre><code class="language-python">df = df.drop_duplicates()
+df['email'] = df['email'].str.strip().str.lower()
+df['fecha_registro'] = pd.to_datetime(df['fecha_registro'], errors='coerce')
+df['revenue'] = df['revenue'].fillna(0)
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Descartar filas con datos faltantes con <code>dropna()</code> sin chequear <em>cuánto</em> dato estás perdiendo o <em>por qué</em>. Siempre chequeá <code>df.isna().sum()</code> primero y entendé si la ausencia de datos es aleatoria o significativa (ej: "revenue es nulo" podría significar "el pedido se canceló," no "error de datos").</p>
+</blockquote>
+<h2 id="54-analisis-exploratorio-de-datos-eda">5.4 Análisis Exploratorio de Datos (EDA)</h2>
+<pre><code class="language-python">df['categoria'].value_counts()
+df.groupby('categoria')['revenue'].agg(['sum', 'mean', 'count'])
+df.corr(numeric_only=True)
+</code></pre>
+<p>El EDA responde: ¿cómo es realmente este dato, hay outliers, hay sorpresas, algo contradice lo que asumen los stakeholders?</p>
+<h2 id="55-ingenieria-de-features">5.5 Ingeniería de Features</h2>
+<pre><code class="language-python">df['mes_pedido'] = df['fecha_pedido'].dt.to_period('M')
+df['es_finde'] = df['fecha_pedido'].dt.dayofweek &gt;= 5
+df['revenue_por_unidad'] = df['revenue'] / df['cantidad']
+</code></pre>
+<p>La ingeniería de features es donde el conocimiento del negocio se convierte en una columna que un modelo o un gráfico puede usar directamente — el puente hacia el <a href="08_Machine_Learning.md">Capítulo 08 (Machine Learning)</a>.</p>
+<h2 id="56-visualizacion-y-estadistica">5.6 Visualización y Estadística</h2>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.lineplot(data=df, x='mes_pedido', y='revenue', hue='categoria')
+plt.title('Revenue Mensual por Categoría')
+plt.show()
+</code></pre>
+<p>Acompañá cada gráfico con la estadística que lo respalda — un promedio sin una noción de dispersión (desvío estándar, IQR) puede confundir a un stakeholder.</p>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Preguntate siempre "¿comparado con qué?" Un número solo ("el revenue fue $2M el mes pasado") no significa nada sin una comparación — mes contra mes, año contra año, o contra un objetivo.</p>
+</blockquote>
+<h2 id="57-organizacion-de-proyectos-logging-entornos-virtuales">5.7 Organización de proyectos, logging, entornos virtuales</h2>
+<pre><code>proyecto/
+├── data/
+├── notebooks/
+├── src/
+│   ├── clean.py
+│   ├── features.py
+│   └── analysis.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+</code></pre>
+<pre><code class="language-bash">python -m venv .venv
+source .venv/bin/activate      # o .venv\Scripts\activate en Windows
+pip install pandas numpy matplotlib seaborn
+pip freeze &gt; requirements.txt
+</code></pre>
+<pre><code class="language-python">import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info(f&quot;Se cargaron {len(df)} filas después de limpiar&quot;)
+</code></pre>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Un <strong>entorno virtual</strong> por proyecto + un <code>requirements.txt</code> versionado es lo que separa "un script que corrió en mi máquina una vez" de un proyecto que un compañero realmente puede reproducir. Este es exactamente el hábito en el que te vas a apoyar para los <a href="../proyectos/">10 proyectos de portfolio</a>.</p>
+</blockquote>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Dejá que SQL agregue; dejá que Python limpie, explore, cree features y visualice.</li>
+<li>Siempre cuantificá los datos faltantes antes de descartarlos, y siempre comparás números contra algo.</li>
+<li>Estructurá cada proyecto con <code>venv</code> + <code>requirements.txt</code> + logging desde el día uno — es un hábito de cinco minutos que hace tu trabajo reproducible.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="06_Power_BI.md">06. Power BI →</a> — convirtiendo este análisis en un dashboard que los stakeholders realmente usen.</p></section><section id="chapter-06"><h1 id="06-power-bi">06 · Power BI</h1>
+<p><em>Parte 6 · Anterior: <a href="05_Python.md">05. Python</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Construir un dashboard real desde cero: cargar y modelar datos, escribir medidas DAX, y publicar algo en lo que un Product Manager o un ejecutivo realmente confiaría.</p>
+</blockquote>
+<hr />
+<h2 id="61-power-query">6.1 Power Query</h2>
+<p>Power Query es la capa de carga y transformación de datos de Power BI (Obtener Datos → Transformar). Pensalo como una interfaz gráfica para muchos de los pasos de limpieza que hiciste en el <a href="05_Python.md#53-limpieza">Capítulo 05</a>, excepto que acá se compilan en un pipeline reutilizable y actualizable.</p>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Hacé la transformación pesada río arriba (SQL/dbt en el warehouse) y dejá Power Query para transformaciones livianas — renombrar, convertir tipos, filtros simples. Un modelo que se apoya en el warehouse para la lógica es más fácil de debuggear y mucho más rápido de actualizar.</p>
+</blockquote>
+<h2 id="62-modelado-de-datos-y-relaciones">6.2 Modelado de Datos y Relaciones</h2>
+<p>Power BI quiere que tu dato esté modelado de la misma forma que aprendiste en el <a href="03_Bases_de_Datos.md#33-star-schema-vs-snowflake-schema">Capítulo 03</a>: un <strong>Star Schema</strong> con una tabla de hechos y varias tablas de dimensión, conectadas por relaciones uno-a-muchos.</p>
+<pre><code class="language-mermaid">erDiagram
+    FACT_VENTAS }o--|| DIM_FECHA : &quot;&quot;
+    FACT_VENTAS }o--|| DIM_PRODUCTO : &quot;&quot;
+    FACT_VENTAS }o--|| DIM_CLIENTE : &quot;&quot;
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Importar tablas anchas, planas y pre-unidas desde una planilla en vez de un star schema apropiado. Funciona para un dataset diminuto, y después se rompe rápido — filas de dimensión duplicadas, agregaciones incorrectas, y un DAX innecesariamente complicado. Modelalo bien desde el principio.</p>
+</blockquote>
+<h2 id="63-dax-medidas-kpis">6.3 DAX, Medidas, KPIs</h2>
+<p><strong>DAX</strong> (Data Analysis Expressions) es el lenguaje de fórmulas de Power BI. El hábito más importante: escribir <strong>Medidas</strong>, no <strong>Columnas Calculadas</strong>, para todo lo que agregues.</p>
+<pre><code class="language-dax">Revenue Total = SUM(fact_ventas[revenue])
+
+Revenue % MoM =
+VAR MesActual = [Revenue Total]
+VAR MesAnterior =
+    CALCULATE([Revenue Total], DATEADD(dim_fecha[fecha_completa], -1, MONTH))
+RETURN
+    DIVIDE(MesActual - MesAnterior, MesAnterior)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Columna Calculada</th>
+<th>Medida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Se calcula</td>
+<td>Fila por fila, guardada en el modelo</td>
+<td>Al vuelo, según el contexto de filtro</td>
+</tr>
+<tr>
+<td>Usar para</td>
+<td>Atributos estáticos por fila (ej: <code>Nombre Completo</code>)</td>
+<td>KPIs, agregaciones, cualquier cosa que cambie con los filtros</td>
+</tr>
+<tr>
+<td>Costo</td>
+<td>Aumenta el tamaño del modelo</td>
+<td>Se calcula en tiempo de consulta — sin costo de almacenamiento</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Caso de negocio:</strong> Un ejecutivo filtra el dashboard a "Región = LatAm, Q2." Una <strong>Medida</strong> bien escrita para <code>Revenue Total</code> se recalcula automáticamente para ese contexto de filtro — una columna calculada no lo haría.</p>
+</blockquote>
+<h2 id="64-dashboards-bookmarks-drill-through">6.4 Dashboards, Bookmarks, Drill Through</h2>
+<ul>
+<li><strong>Diseño de dashboard/reporte:</strong> liderá con el KPI, respaldá con la tendencia, permití el drill-down — no enterrés la respuesta debajo de cinco gráficos de contexto.</li>
+<li><strong>Bookmarks:</strong> guardan un estado específico de filtro/vista, se usan para construir "botones" guiados que cambian vistas del reporte.</li>
+<li><strong>Drill Through:</strong> dejá que un usuario haga click derecho en un punto de dato (ej: una región) y salte a una página de detalle filtrada solo a esa región.</li>
+</ul>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Diseñá para la "lectura de 5 segundos": alguien que le echa un vistazo a tu dashboard en medio de una reunión debería obtener el número principal y su dirección (arriba/abajo vs. objetivo) sin tener que buscar.</p>
+</blockquote>
+<h2 id="65-deployment-publicacion-buenas-practicas">6.5 Deployment, Publicación, Buenas Prácticas</h2>
+<pre><code class="language-mermaid">flowchart LR
+    PBIX[Power BI Desktop\narchivo .pbix] --&gt;|Publicar| Service[Power BI Service]
+    Service --&gt;|Actualización programada| DW[(Data Warehouse)]
+    Service --&gt;|Compartir / Embeber| Stakeholders[Stakeholders]
+</code></pre>
+<blockquote>
+<p>✅ <strong>Checklist de buenas prácticas</strong>
+- Configurá la <strong>actualización programada</strong> para que el dashboard nunca muestre datos desactualizados.
+- Usá <strong>Seguridad a Nivel de Fila (RLS)</strong> si distintas regiones/equipos solo deberían ver sus propios datos.
+- Documentá tus medidas (Power BI soporta descripciones) para que el próximo analista no tenga que hacer ingeniería inversa de tu DAX.
+- Versioná tus archivos <code>.pbix</code> y mantené un changelog para rediseños importantes del dashboard, la misma disciplina que el <a href="../CHANGELOG.md"><code>CHANGELOG.md</code></a> de este handbook.</p>
+</blockquote>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Power Query da forma liviana al dato; la transformación pesada pertenece río arriba, en SQL.</li>
+<li>Modelá en Star Schema — es la misma disciplina del Capítulo 03, ahora dentro de Power BI.</li>
+<li>Escribí <strong>Medidas</strong>, no Columnas Calculadas, para los KPIs — respetan el contexto de filtro.</li>
+<li>Publicá con actualización programada, RLS donde haga falta, y documentación, para que el dashboard sobreviva sin que vos estés en la sala.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="07_Proyectos_Profesionales.md">07. Proyectos Profesionales →</a> — combinando SQL, Python y Power BI en un proyecto completo y presentable.</p></section><section id="chapter-07"><h1 id="07-proyectos-profesionales">07 · Proyectos Profesionales</h1>
+<p><em>Parte 7 · Anterior: <a href="06_Power_BI.md">06. Power BI</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Definir el alcance, estructurar y entregar un proyecto de la forma en que realmente pasa dentro de una empresa — no un notebook de Kaggle, sino un problema de negocio llevado desde la pregunta hasta el resumen ejecutivo.</p>
+</blockquote>
+<hr />
+<h2 id="71-la-metodologia">7.1 La metodología</h2>
+<p>Cada proyecto en <a href="../proyectos/"><code>../proyectos/</code></a> sigue el mismo arco de siete pasos — que no es casualidad, es también cómo se define el alcance del trabajo real de un analista en una empresa:</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[1. Problema de Negocio] --&gt; B[2. Datos y Esquema]
+    B --&gt; C[3. Preguntas a Responder]
+    C --&gt; D[4. SQL]
+    D --&gt; E[5. Python]
+    E --&gt; F[6. Power BI]
+    F --&gt; G[7. Resumen Ejecutivo]
+</code></pre>
+<ol>
+<li><strong>Problema de Negocio</strong> — un párrafo, escrito como lo preguntaría realmente un stakeholder ("¿Por qué está subiendo el churn en el Noreste?"), no como una descripción de dataset.</li>
+<li><strong>Diagrama de Base de Datos</strong> — el esquema con el que estás trabajando, dibujado como en el <a href="03_Bases_de_Datos.md">Capítulo 03</a>.</li>
+<li><strong>Preguntas a Responder</strong> — 4–6 preguntas concretas en las que se descompone el problema de negocio.</li>
+<li><strong>SQL</strong> — extracción y agregación según el <a href="04_SQL.md">Capítulo 04</a>.</li>
+<li><strong>Python</strong> — limpieza, EDA e ingeniería de features según el <a href="05_Python.md">Capítulo 05</a>.</li>
+<li><strong>Power BI</strong> — el dashboard que los stakeholders realmente van a abrir, según el <a href="06_Power_BI.md">Capítulo 06</a>.</li>
+<li><strong>Resumen Ejecutivo</strong> — una página: qué encontraste, qué recomendás, qué necesitarías para ir más allá.</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Escribí el Resumen Ejecutivo <strong>primero</strong>, como hipótesis, antes de tocar el dato. Te obliga a plantear cómo sería una buena respuesta — y después el análisis o la confirma, o la mata, o la complica. Eso da una narrativa de proyecto mucho más sólida que "exploré el dato y encontré algunas cosas".</p>
+<p>⚠️ <strong>Error común</strong>
+Liderar un proyecto con las herramientas ("Usé Python y Power BI para analizar datos de retail") en vez del problema de negocio. Los reclutadores y hiring managers hojean docenas de estos — los que se leen como un caso de negocio, no como una vidriera de herramientas, se destacan.</p>
+</blockquote>
+<h2 id="72-estructura-de-carpetas-del-proyecto">7.2 Estructura de carpetas del proyecto</h2>
+<p>Cada proyecto en <a href="../proyectos/"><code>../proyectos/</code></a> usa esta estructura:</p>
+<pre><code>proyectos/&lt;NN_Nombre_Proyecto&gt;/
+├── README.md        # problema de negocio, objetivos, arquitectura, workflow, conclusiones
+├── data/
+├── sql/
+├── python/
+├── powerbi/
+├── diagramas/
+└── presentacion/
+</code></pre>
+<h2 id="73-los-10-proyectos">7.3 Los 10 proyectos</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Proyecto</th>
+<th>Dificultad</th>
+<th>Habilidades principales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Analítica de Ventas Retail</td>
+<td>Principiante</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>02</td>
+<td>Churn de Clientes E-commerce</td>
+<td>Intermedio</td>
+<td>SQL, Python</td>
+</tr>
+<tr>
+<td>03</td>
+<td>BI de Adventure Works</td>
+<td>Intermedio</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>04</td>
+<td>Operaciones Northwind</td>
+<td>Principiante</td>
+<td>SQL</td>
+</tr>
+<tr>
+<td>05</td>
+<td>Detección de Fraude con Tarjeta de Crédito</td>
+<td>Avanzado</td>
+<td>Python, ML</td>
+</tr>
+<tr>
+<td>06</td>
+<td>Analítica de Rotación de Personal (HR)</td>
+<td>Intermedio</td>
+<td>SQL, Python, Power BI</td>
+</tr>
+<tr>
+<td>07</td>
+<td>Performance de Campañas de Marketing</td>
+<td>Intermedio</td>
+<td>SQL, Power BI</td>
+</tr>
+<tr>
+<td>08</td>
+<td>Forecasting Financiero</td>
+<td>Avanzado</td>
+<td>Python, Series de Tiempo</td>
+</tr>
+<tr>
+<td>09</td>
+<td>Motor de Recomendación de Productos</td>
+<td>Avanzado</td>
+<td>Python, ML</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Capstone: Pipeline End-to-End</td>
+<td>Avanzado</td>
+<td>SQL, Python, Power BI, ML</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Un proyecto real empieza con un problema de negocio planteado como lo preguntaría un stakeholder, no como una descripción de dataset.</li>
+<li>Estructura: Problema de Negocio → Esquema → Preguntas → SQL → Python → Power BI → Resumen Ejecutivo.</li>
+<li>Escribí el Resumen Ejecutivo como hipótesis primero — afila todo el análisis.</li>
+<li>Los 10 proyectos en <a href="../proyectos/"><code>../proyectos/</code></a> aplican esta metodología de punta a punta, aumentando en dificultad.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="08_Machine_Learning.md">08. Machine Learning →</a> — para los proyectos (05, 08, 09, 10) que van más allá de SQL/BI hacia el modelado predictivo.</p></section><section id="chapter-08"><h1 id="08-machine-learning">08 · Machine Learning</h1>
+<p><em>Parte 8 · Anterior: <a href="07_Proyectos_Profesionales.md">07. Proyectos Profesionales</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Enmarcar un problema de negocio como un problema de modelado, construir un pipeline de evaluación apropiado, y entender qué hace falta para llevar un modelo a producción — el puente de Data Analyst → Data Scientist del <a href="01_Introduccion.md#14-caminos-de-carrera">01.4</a>.</p>
+</blockquote>
+<hr />
+<h2 id="81-los-tipos-de-problema">8.1 Los tipos de problema</h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Predice</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Regresión</strong></td>
+<td>Un número continuo</td>
+<td>Pronosticar el revenue del próximo mes</td>
+</tr>
+<tr>
+<td><strong>Clasificación</strong></td>
+<td>Una categoría</td>
+<td>¿Este cliente va a hacer churn? (sí/no)</td>
+</tr>
+<tr>
+<td><strong>Clustering</strong></td>
+<td>Estructura sin etiquetas</td>
+<td>Segmentar clientes por comportamiento, sin etiquetas dadas</td>
+</tr>
+<tr>
+<td><strong>Recomendación</strong></td>
+<td>Relevancia rankeada</td>
+<td>"Los clientes que compraron X también compraron Y"</td>
+</tr>
+<tr>
+<td><strong>Series de Tiempo</strong></td>
+<td>Valores futuros en el tiempo</td>
+<td>Pronóstico de demanda diaria</td>
+</tr>
+<tr>
+<td><strong>NLP</strong></td>
+<td>Estructura/significado de texto</td>
+<td>Clasificar tickets de soporte por tema, sentimiento de reseñas</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+Un sistema de <strong>Detección de Fraude con Tarjeta de Crédito</strong> (ver <a href="../proyectos/05_Deteccion_Fraude_Tarjeta_Credito/">Proyecto 05</a>) es un problema de clasificación con desbalance de clases extremo — el fraude es tal vez el 0.1% de las transacciones. Enmarcar esto correctamente (y elegir la métrica correcta) importa más que qué algoritmo elijas.</p>
+</blockquote>
+<h2 id="82-ingenieria-de-features-repaso-mirada-de-modelado">8.2 Ingeniería de Features (repaso + mirada de modelado)</h2>
+<p>Todo del <a href="05_Python.md#55-ingeniería-de-features">05.5</a> aplica — ahora con un objetivo de modelado: ¿esta feature realmente ayuda al modelo a separar clases / predecir el número, o es ruido sobre el que el modelo va a hacer overfitting?</p>
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+preprocess = ColumnTransformer([
+    ('num', StandardScaler(), ['revenue_por_unidad', 'cantidad_pedidos']),
+    ('cat', OneHotEncoder(handle_unknown='ignore'), ['categoria', 'region']),
+])
+</code></pre>
+<h2 id="83-pipelines-y-validacion-cruzada">8.3 Pipelines y Validación Cruzada</h2>
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+
+pipe = Pipeline([
+    ('preprocess', preprocess),
+    ('model', RandomForestClassifier(random_state=42)),
+])
+
+scores = cross_val_score(pipe, X_train, y_train, cv=5, scoring='f1')
+pipe.fit(X_train, y_train)
+</code></pre>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Siempre envolvé el preprocesamiento + modelo en un único <code>Pipeline</code>, y siempre hacé validación cruzada. Un modelo que se ve genial en un split de train/test y terrible en otro no está listo — esta es la forma #1 en que los proyectos junior sobreestiman sus resultados.</p>
+</blockquote>
+<h2 id="84-evaluacion-de-modelos">8.4 Evaluación de Modelos</h2>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Usar cuando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RMSE / MAE</strong></td>
+<td>Regresión — magnitud promedio del error</td>
+</tr>
+<tr>
+<td><strong>Accuracy</strong></td>
+<td>Clasificación, solo cuando las clases están balanceadas</td>
+</tr>
+<tr>
+<td><strong>Precision / Recall / F1</strong></td>
+<td>Clasificación con desbalance (fraude, churn)</td>
+</tr>
+<tr>
+<td><strong>ROC-AUC</strong></td>
+<td>Qué tan bien separa el modelo las clases a lo largo de distintos umbrales</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Reportar 99% de accuracy en un modelo de fraude donde el fraude es el 0.1% del dato — un modelo que predice "no es fraude" para todo obtiene 99.9% de accuracy siendo completamente inútil. Exactamente por esto existen <strong>Precision/Recall</strong>.</p>
+</blockquote>
+<h2 id="85-optimizacion-de-hiperparametros">8.5 Optimización de Hiperparámetros</h2>
+<pre><code class="language-python">from sklearn.model_selection import GridSearchCV
+
+param_grid = {'model__n_estimators': [100, 300], 'model__max_depth': [5, 10, None]}
+grid = GridSearchCV(pipe, param_grid, cv=5, scoring='f1')
+grid.fit(X_train, y_train)
+print(grid.best_params_)
+</code></pre>
+<h2 id="86-deployment-el-traspaso-al-ml-engineer">8.6 Deployment (el traspaso al ML Engineer)</h2>
+<pre><code class="language-mermaid">flowchart LR
+    NB[Notebook: modelo entrenado] --&gt; Serialize[Serializar\n.pkl / MLflow]
+    Serialize --&gt; API[Envolver en API\nFastAPI / Flask]
+    API --&gt; Prod[Servicio en producción]
+    Prod --&gt; Monitor[Monitoreo: drift, latencia, accuracy]
+    Monitor --&gt;|dispara| Retrain[Pipeline de reentrenamiento]
+</code></pre>
+<blockquote>
+<p>🏢 <strong>Ejemplo real de empresa</strong>
+El modelo de churn de un Data Scientist no genera valor de negocio sentado en un notebook. Un <strong>ML Engineer</strong> lo envuelve detrás de una API, el producto lo llama cuando decide quién recibe una oferta de retención, y el modelo se monitorea por <strong>drift</strong> — cuando el dato en vivo empieza a parecerse menos al dato de entrenamiento, el accuracy se degrada silenciosamente. Este es el límite de roles del <a href="01_Introduccion.md#12-los-seis-roles-y-cómo-se-diferencian-realmente">01.2</a>.</p>
+</blockquote>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>Enmarcá correctamente el problema de negocio como regresión / clasificación / clustering / recsys / series de tiempo / NLP antes de elegir un algoritmo.</li>
+<li>Usá siempre un <code>Pipeline</code> + validación cruzada — nunca confíes en un solo split de train/test.</li>
+<li>Hacé coincidir la métrica con el problema: la clasificación desbalanceada necesita Precision/Recall/F1, no accuracy.</li>
+<li>El deployment es una disciplina distinta (ML Engineering) — entrenar un buen modelo es necesario pero no suficiente.</li>
+</ul>
+<p><strong>Siguiente:</strong> <a href="09_Portfolio_Carrera.md">09. Portfolio y Carrera →</a> — convirtiendo todo lo que construiste en un trabajo.</p></section><section id="chapter-09"><h1 id="09-portfolio-y-carrera">09 · Portfolio y Carrera</h1>
+<p><em>Parte 9 · Anterior: <a href="08_Machine_Learning.md">08. Machine Learning</a></em></p>
+<blockquote>
+<p>💡 <strong>Qué vas a poder hacer después de este capítulo</strong>
+Empaquetar todo lo de los Capítulos 1–8 en un portfolio y una búsqueda laboral que realmente convierta — higiene de Git, un CV que se lee como impacto en vez de tareas, preparación de entrevistas, y un camino hacia el freelancing si querés uno.</p>
+</blockquote>
+<hr />
+<h2 id="91-git-y-github">9.1 Git y GitHub</h2>
+<pre><code class="language-bash">git init
+git add .
+git commit -m &quot;Agregar análisis de churn de clientes: extracción SQL + EDA en Python&quot;
+git remote add origin &lt;tu-url-de-repo&gt;
+git push -u origin main
+</code></pre>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Comiteá en bloques significativos con mensajes que describan <em>por qué</em>, no "update file" — un hiring manager que hojea tu historial de commits está evaluando silenciosamente cómo vas a trabajar en su equipo. Esta es la misma disciplina que modela el propio <a href="../CHANGELOG.md"><code>CHANGELOG.md</code></a> de este handbook.</p>
+</blockquote>
+<h2 id="92-readme-y-estructura-de-proyecto">9.2 README y Estructura de Proyecto</h2>
+<p>Cada proyecto (<a href="07_Proyectos_Profesionales.md">Capítulo 07</a>) necesita un README que un reclutador pueda leer en 60 segundos y entender: <strong>Cuál era el problema de negocio, qué hiciste, qué encontraste.</strong> Empezá con una captura del dashboard o un gráfico clave — no con una pared de texto.</p>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Un perfil de GitHub con 15 repos de tutoriales seguidos al pie de la letra ("Notebook Titanic #1") y cero proyectos terminados y narrados. Tres proyectos completos con un planteo real de negocio (según el <a href="07_Proyectos_Profesionales.md">Capítulo 07</a>) le ganan a quince sin terminar, siempre.</p>
+</blockquote>
+<h2 id="93-linkedin-y-cv">9.3 LinkedIn y CV</h2>
+<p><strong>Fórmula para bullets del CV:</strong> <code>[Acción] + [qué analizaste/construiste] + [impacto de negocio cuantificado]</code></p>
+<table>
+<thead>
+<tr>
+<th>Débil</th>
+<th>Fuerte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Usé SQL y Python para analizar datos de ventas"</td>
+<td>"Identifiqué una fuga de revenue de $180k/año en un bug de acumulación de descuentos usando análisis de cohortes en SQL; recomendación adoptada por Finanzas"</td>
+</tr>
+<tr>
+<td>"Construí dashboards en Power BI"</td>
+<td>"Construí un dashboard ejecutivo en Power BI adoptado por 3 equipos regionales, reemplazando 6 horas/semana de reportes manuales"</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>✅ <strong>Buena práctica</strong>
+Cada bullet debería sobrevivir a la pregunta "¿y qué?". Si no termina en un resultado que le importe a alguien de negocio, reescribilo.</p>
+</blockquote>
+<h2 id="94-preguntas-de-entrevista">9.4 Preguntas de Entrevista</h2>
+<p><strong>Ronda de SQL</strong> (ver también <a href="04_SQL.md">Capítulo 04</a>):
+- Escribí una query para encontrar el segundo salario más alto por departamento.
+- Explicá la diferencia entre <code>WHERE</code> y <code>HAVING</code>.
+- Dadas dos tablas, escribí una query para encontrar clientes sin pedidos.</p>
+<p><strong>Ronda de Python</strong> (ver también <a href="05_Python.md">Capítulo 05</a>):
+- Dado un DataFrame desordenado, explicá en voz alta tu enfoque de limpieza.
+- Explicá <code>.groupby()</code> vs. una tabla dinámica — ¿cuándo usarías cada uno?</p>
+<p><strong>Ronda de caso de negocio:</strong>
+- "Los usuarios activos semanales bajaron 10% la semana pasada — contame cómo lo investigarías."
+- Practicá estructurar tu respuesta: aclarar la definición de la métrica → chequear problemas de datos → segmentar (por plataforma, geografía, cohorte) → formular y testear una hipótesis → recomendar próximos pasos.</p>
+<p><strong>Ronda de ML</strong> (ver también <a href="08_Machine_Learning.md">Capítulo 08</a>):
+- Precision vs. Recall — ¿cuándo optimizás por uno sobre el otro?
+- ¿Cómo sabés si un modelo está haciendo overfitting?</p>
+<h2 id="95-freelancing-fiverr-upwork">9.5 Freelancing (Fiverr, Upwork)</h2>
+<p>El trabajo freelance en datos es una forma legítima de construir portfolio <em>e</em> ingresos mientras buscás trabajo:</p>
+<ul>
+<li>Empezá con proyectos chicos y bien acotados: "limpiame y analizame este dataset," "construime un dashboard de 3 páginas en Power BI."</li>
+<li>Cobrá por el entregable, no por hora, una vez que tengas 2-3 reseñas.</li>
+<li>Cada proyecto freelance es un proyecto de portfolio — aplicale la estructura del <a href="07_Proyectos_Profesionales.md">Capítulo 07</a> también.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Error común</strong>
+Cobrar de menos para ganar el primer trabajo, y quedarte cobrando de menos para siempre. Bajá el precio solo para tus primeras 2-3 reseñas, y después subí tus tarifas — las reseñas son el activo que realmente estás comprando en esa etapa.</p>
+</blockquote>
+<h2 id="96-cronogramas-de-aprendizaje">9.6 Cronogramas de Aprendizaje</h2>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Ritmo</th>
+<th>Distribución aproximada por capítulo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>6 meses</strong> (intensivo, ~25-30 hs/sem)</td>
+<td>Cap.01–03: 2 sem · SQL: 4 sem · Python: 5 sem · Power BI: 3 sem · Proyectos: 6 sem · ML: 4 sem · Portfolio/búsqueda laboral: continuo desde el mes 4</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>12 meses</strong> (balanceado, ~12-15 hs/sem)</td>
+<td>Mismo orden, aproximadamente el doble de tiempo por fase, con 2 proyectos corriendo en paralelo con cada nueva habilidad</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>18 meses</strong> (part-time, ~6-8 hs/sem)</td>
+<td>Mismo orden, un tema a la vez, mínimo 1 proyecto entregado por trimestre</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="97-consejos-de-un-ingeniero-senior">9.7 Consejos de un Ingeniero Senior</h2>
+<blockquote>
+<p>🏢 <strong>Desde las trincheras</strong>
+- "Los mejores analistas que contraté no eran los mejores en SQL — eran los mejores en preguntar '¿es esta la pregunta correcta?' antes de escribir cualquier query."
+- "En tus primeros seis meses en el trabajo, sobre-comunicá los supuestos. Un número incorrecto que nadie cuestionó es peor que un número lento en el que todos confían."
+- "No esperes permiso para tener curiosidad sobre una métrica que se ve rara. Ese instinto es el trabajo en sí."</p>
+</blockquote>
+<hr />
+<h2 id="resumen-del-capitulo">Resumen del capítulo</h2>
+<ul>
+<li>La higiene de Git/GitHub y un README que lidera con impacto de negocio son parte del entregable, no un detalle secundario.</li>
+<li>Los bullets del CV deberían sobrevivir a "¿y qué?" — cuantificá el impacto de negocio, no solo las herramientas usadas.</li>
+<li>Preparate para cuatro frentes de entrevista: SQL, Python, caso de negocio, y (si aplica) ML.</li>
+<li>El freelancing es un camino paralelo legítimo — tratá cada trabajo como un proyecto de portfolio.</li>
+<li>Elegí un cronograma (6/12/18 meses) que coincida con tus horas reales disponibles, no con tu ambición.</li>
+</ul>
+<p><strong>Esto completa el handbook central.</strong> Volvé a la Tabla de Contenidos · Continuá con los <a href="../proyectos/">10 proyectos de portfolio</a> para aplicar todo.</p></section></body></html>

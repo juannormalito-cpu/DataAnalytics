@@ -1,10 +1,14 @@
 .idea/
+.claude/
 __pycache__/
 *.pyc
 .env
 *.egg-info/
 .venv/
 .ruff_cache/
+
+# Scratchpad de sesiones de Claude Code — nunca es parte del proyecto versionable.
+scratch_ml_pdf/
 
 # Datos pesados a nivel workspace: se conserva la estructura de carpetas (.gitkeep),
 # no su contenido.

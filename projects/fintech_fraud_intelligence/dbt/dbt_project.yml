@@ -1,0 +1,14 @@
+name: 'fintech_fraud_intelligence'
+version: '1.0.0'
+config-version: 2
+profile: 'fintech_fraud_intelligence'
+
+model-paths: ["models"]
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  fintech_fraud_intelligence:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

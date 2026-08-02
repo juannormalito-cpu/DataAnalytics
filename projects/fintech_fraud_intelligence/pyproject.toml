@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fintech_fraud_intelligence"
+version = "0.1.0"
+description = "Fraud & transaction analytics platform for a fintech mobile-money product, built on the PaySim dataset."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Facu" }
+]
+dependencies = [
+    "pandas",
+    "SQLAlchemy",
+    "psycopg2-binary",
+    "python-dotenv",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
+    "joblib",
+    "shap",
+    "fastapi",
+    "uvicorn",
+    "httpx",
+    "dbt-core",
+    "dbt-postgres",
+    "prefect",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

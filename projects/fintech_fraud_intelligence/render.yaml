@@ -1,0 +1,20 @@
+# Config de deploy para Render (render.com) — plan gratuito disponible.
+# No creo la cuenta por vos: entrá a render.com, conectá este repo, y Render
+# detecta este archivo automáticamente ("New > Blueprint").
+#
+# Nota: el modelo entrenado (models/*.joblib) tiene que estar committeado al
+# repo (o subido a un storage externo) para que el servicio lo encuentre —
+# ver .gitignore del proyecto, hoy 'models/' está ignorado por defecto.
+
+services:
+  - type: web
+    name: fintech-fraud-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -e ../../shared && pip install -e ."
+    startCommand: "uvicorn src.interfaces.api:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        sync: false  # lo pegás vos manualmente en el dashboard de Render, no va en el repo
+      - key: LOG_LEVEL
+        value: INFO
